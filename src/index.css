@@ -12,3 +12,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+p, h1, h2, h3 {
+  font-family: 'Open Sans', verdana;
+  font-weight: lighter;
+}

@@ -11,9 +11,3 @@ export const Select = styled(Selector)`
   height: 30px;
   min-width: 110px;
 `
-export const CardContainer = styled.div`
-  width: 60%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
