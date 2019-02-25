@@ -1,6 +1,6 @@
 const corsProxy = 'https://cors-anywhere.herokuapp.com'
 const apiUrl = `${corsProxy}/https://api.steampowered.com`
-// const storeUrl = 'https://store.steampowered.com/api'
+const storeUrl = 'https://store.steampowered.com'
 
 const apiKey = '6C07A0039600F983FF9DE827D6D95500'
 const steamId = '76561198061553967'
@@ -30,11 +30,12 @@ export const fetchOwnedGames = async () => {
     const ownedGames = games.map((game) => ({
       appId: game.appid,
       // iconUrl: `${appsBaseImageUrl}/${game.appid}/${game.img_icon_url}`,
+      link: `${storeUrl}/app/${game.appid}`,
       logoUrl: `${appsBaseImageUrl}/${game.appid}/${game.img_logo_url}.jpg`,
-      playtime: game.playtime_forever,
+      playtime: game.playtime_forever / 60,
       name: game.name
     }))
-    return { ownedGames, status: FetchStatus.Success }
+    return { games: ownedGames, status: FetchStatus.Success }
   } catch (error) {
     return { status: FetchStatus.Failed }
   }
