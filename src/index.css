@@ -14,7 +14,7 @@ code {
     monospace;
 }
 
-p, h1, h2, h3 {
+p, h1, h2, h3, input {
   font-family: 'Open Sans', verdana;
   font-weight: lighter;
   margin: 0;

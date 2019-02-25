@@ -1,7 +1,8 @@
-import React, { Text } from 'react'
-import { SteamColors } from '../../globalStyles'
+import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import Row from './row'
+import { SteamColors } from '../../globalStyles'
 
 const Container = styled.div`
   display: flex;
@@ -10,26 +11,7 @@ const Container = styled.div`
   background: ${SteamColors.primaryDark};
   padding: 22px;
 `
-
-const Column = styled.div`
-
-`
-
-const Row = styled.div`
-  padding: 4px;
-  display: flex;
-  flex-direction: row;
-`
-
-const Label = styled.p`
-  font-size: 16px;
-  color: ${SteamColors.accent};
-`
-
-const Value = styled.p`
-  font-size: 16px;
-  color: ${SteamColors.secondary};
-`
+const Column = styled.div``
 
 const Header = props => {
   const {
@@ -46,64 +28,30 @@ const Header = props => {
   return (
     <Container>
       <Column>
-        <Row>
-          <Label>Tempo de Jogo:&nbsp;</Label>
-          <Value>{hoursPlayed.toFixed(0)} horas</Value>
-        </Row>
+        <Row label='Tempo de Jogo:' value={`${hoursPlayed.toFixed(0)} horas`} />
         {/*
           VALUE: accountValue.toFixed(2).replace('.', ',')
-          <Row>
-            <Label>Valor da Conta:&nbsp;</Label>
-            <Value>R$ {accountValue}</Value>
-          </Row>
-          <Row>
-            <Label>Reais / Horas:&nbsp;</Label>
-            <Value>R$ {valuePerHour} / h</Value>
-          </Row>
+          <Row label='Valor da Conta:' value={`R$ ${accountValue}`} />
+          <Row label='Reais / Horas:' value={`R$ ${valuePerHour}/h`} />
         */}
-        <Row>
-          <Label>Percentual de Jogados:&nbsp;</Label>
-          <Value>{(100 * percentualPlayed).toFixed(0)}%</Value>
-        </Row>
-        <Row>
-          <Label>Total de Jogos:&nbsp;</Label>
-          <Value>{numberOfGames}</Value>
-        </Row>
+        <Row label='Percentual de Jogados:' value={`${(100 * percentualPlayed).toFixed(0)}%`} />
+        <Row label='Total de Jogos:' value={numberOfGames} />
       </Column>
       <Column>
-        <Row>
-          <Label>Mais de 100 horas:&nbsp;</Label>
-          <Value>{time100plus}</Value>
-        </Row>
-        <Row>
-          <Label>100 a 10 horas:&nbsp;</Label>
-          <Value>{time100to10}</Value>
-        </Row>
-        <Row>
-          <Label>10 a 1 horas:&nbsp;</Label>
-          <Value>{time10to1}</Value>
-        </Row>
+        <Row label='Mais de 100 horas:' value={time100plus} />
+        <Row label='100 a 10 horas:' value={time100to10} />
+        <Row label='10 a 1 horas:' value={time10to1} />
       </Column>
       <Column>
-        <Row>
-          <Label>Menos de 1 hora:&nbsp;</Label>
-          <Value>{time1minus}</Value>
-        </Row>
-        <Row>
-          <Label>Nunca Jogados:&nbsp;</Label>
-          <Value>{timeNeverPlayed}</Value>
-        </Row>
+        <Row label='Menos de 1 hora:' value={time1minus} />
+        <Row label='Nunca Jogados:' value={timeNeverPlayed} />
       </Column>
       <Column>
-        <Row>
-          <Label>Mais Jogado:&nbsp;</Label>
-          <Value>{mostPlayed.name} ({mostPlayed.playtime.toFixed(1)} horas)</Value>
-        </Row>
+        <Row label='Mais Jogado:' value={`${mostPlayed.name} (${mostPlayed.playtime.toFixed(1)} horas)`} />
       </Column>
     </Container>
   )
 }
-
 Header.defaultProps = {
   mostPlayed: { name: 'N/A', playtime: 0 },
   hoursPlayed: 0,
@@ -115,7 +63,6 @@ Header.defaultProps = {
   timeNeverPlayed: 0,
   percentualPlayed: 0
 }
-
 Header.propTypes = {
   mostPlayed: PropTypes.object.isRequired,
   hoursPlayed: PropTypes.number.isRequired,
@@ -127,5 +74,4 @@ Header.propTypes = {
   timeNeverPlayed: PropTypes.number.isRequired,
   percentualPlayed: PropTypes.number.isRequired
 }
-
 export default Header
