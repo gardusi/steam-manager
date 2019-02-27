@@ -48,6 +48,7 @@ const Header = props => {
       </Column>
       <Column>
         <Row label='Mais Jogado:' value={`${mostPlayed.name} (${mostPlayed.playtime.toFixed(1)} horas)`} />
+        <Row label='Powered by:' value={'IsThereAnyDeal.com'} />
       </Column>
     </Container>
   )

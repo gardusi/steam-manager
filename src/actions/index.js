@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import { FetchStatus, fetchOwnedGames } from '../services/steam'
+import { FetchStatus, fetchOwnedGames, fetchGamePrices } from '../services'
 
 export const GET_OWNED_GAMES_START = 'GET_OWNED_GAMES_START'
 export const GET_OWNED_GAMES_RESULT = 'GET_OWNED_GAMES_RESULT'
@@ -14,7 +14,7 @@ const getOwnedGamesResult = (games, metadata, status) => ({
 
 export const getOwnedGames = () => async (dispatch) => {
   dispatch(getOwnedGamesStart())
-  const { games, status } = await fetchOwnedGames()
+  const { games } = await fetchOwnedGames()
   const metadata = {
     hoursPlayed: games.reduce((acc, game) => acc + game.playtime, 0),
     mostPlayed: games.reduce((max, game) => max.playtime < game.playtime ? game : max),
@@ -27,12 +27,18 @@ export const getOwnedGames = () => async (dispatch) => {
   }
   metadata.percentualPlayed = 1 - metadata.timeNeverPlayed / metadata.numberOfGames
 
-  dispatch(getOwnedGamesResult(games, metadata, status))
+  const { gamePrices, status } = await fetchGamePrices(games.map(game => game.appId))
+  const gamesWithPrice = games.map(game => {
+    const { price, lowest } = gamePrices.find(item => item.appId === `${game.appId}`)
+    return { ...game, price, lowest }
+  })
+
+  dispatch(getOwnedGamesResult(gamesWithPrice, metadata, status))
   dispatch(getOwnedGamesEnd())
 }
 
 const initialState = Map({
-  ownedGamesStatus: FetchStatus.Idle,
+  ownedGamesStatus: FetchStatus.idle,
   ownedGames: []
 })
 
@@ -42,7 +48,7 @@ export const appReducer = (state = initialState, { payload, type }) => {
       return state
     case GET_OWNED_GAMES_END:
       return state
-        .set('ownedGamesStatus', FetchStatus.Idle)
+        .set('ownedGamesStatus', FetchStatus.idle)
     case GET_OWNED_GAMES_RESULT:
       return state
         .set('ownedGamesStatus', payload.status)
