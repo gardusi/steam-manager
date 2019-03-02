@@ -25,6 +25,15 @@ export const Value = styled.p`
   font-size: 16px;
   color: ${SteamColors.secondary};
 `
+export const Button = styled.button`
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+`
 export const Select = styled(Selector)`
   width: 50%;
   height: 30px;

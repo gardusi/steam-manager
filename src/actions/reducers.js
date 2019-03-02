@@ -1,8 +1,8 @@
-import { routerReducer } from 'react-router-redux'
 import { combineReducers } from 'redux-immutable'
+import { connectRouter } from 'connected-react-router/immutable'
 import { appReducer } from './index'
 
-export default combineReducers({
-  routing: routerReducer,
+export default (history) => combineReducers({
+  routing: connectRouter(history),
   app: appReducer
 })

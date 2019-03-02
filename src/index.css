@@ -8,12 +8,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: #171a21;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  monospace;
 }
-
 p, h1, h2, h3, input {
   font-family: 'Open Sans', verdana;
   font-weight: lighter;
