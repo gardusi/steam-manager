@@ -1,15 +1,18 @@
-export const FetchStatus = { idle: 'idle', success: 'success', failed: 'failed' }
+export const fetchStatus = {
+  idle: 'idle',
+  fetching: 'fetching',
+  success: 'success',
+  error: 'error'
+}
 
-export const success = (payload) => ({ ...payload, status: FetchStatus.success })
-export const failed = () => ({ status: FetchStatus.failed })
-
-export const request = (url, params) => new Promise((resolve, reject) => {
-  if (params) url += `?${Object.keys(params).map(key => `${key}=${params[key]}`).join('&')}`
-  fetch(url)
+const request = (endpoint) => new Promise((resolve, reject) => {
+  if (endpoint.params) endpoint.url += `?${Object.keys(endpoint.params).map(key => `${key}=${endpoint.params[key]}`).join('&')}`
+  fetch(endpoint.url)
     .then(response => response.json())
     .then(response => resolve(response))
     .catch(error => reject(error))
 })
+export default request
 
 export { fetchOwnedGames } from './steam'
 export { fetchGamePrices } from './itad'
