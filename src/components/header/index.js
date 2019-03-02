@@ -13,46 +13,43 @@ const Container = styled.div`
 `
 const Column = styled.div``
 
-const Header = props => {
-  const {
-    hoursPlayed,
-    mostPlayed,
-    numberOfGames,
-    time100plus,
-    time100to10,
-    time10to1,
-    time1minus,
-    timeNeverPlayed,
-    percentualPlayed
-  } = props
-  return (
-    <Container>
-      <Column>
-        <Row label='Tempo de Jogo:' value={`${hoursPlayed.toFixed(0)} horas`} />
-        {/*
-          VALUE: accountValue.toFixed(2).replace('.', ',')
-          <Row label='Valor da Conta:' value={`R$ ${accountValue}`} />
-          <Row label='Reais / Horas:' value={`R$ ${valuePerHour}/h`} />
-        */}
-        <Row label='Percentual de Jogados:' value={`${(100 * percentualPlayed).toFixed(0)}%`} />
-        <Row label='Total de Jogos:' value={numberOfGames} />
-      </Column>
-      <Column>
-        <Row label='Mais de 100 horas:' value={time100plus} />
-        <Row label='100 a 10 horas:' value={time100to10} />
-        <Row label='10 a 1 horas:' value={time10to1} />
-      </Column>
-      <Column>
-        <Row label='Menos de 1 hora:' value={time1minus} />
-        <Row label='Nunca Jogados:' value={timeNeverPlayed} />
-      </Column>
-      <Column>
-        <Row label='Mais Jogado:' value={`${mostPlayed.name} (${mostPlayed.playtime.toFixed(1)} horas)`} />
-        <Row label='Powered by:' value={'IsThereAnyDeal.com'} />
-      </Column>
-    </Container>
-  )
-}
+const Header = ({
+  hoursPlayed,
+  mostPlayed,
+  numberOfGames,
+  time100plus,
+  time100to10,
+  time10to1,
+  time1minus,
+  timeNeverPlayed,
+  percentualPlayed
+}) => (
+  <Container>
+    <Column>
+      <Row label='Tempo de Jogo:' value={`${hoursPlayed.toFixed(0)} horas`} />
+      {/*
+        VALUE: accountValue.toFixed(2).replace('.', ',')
+        <Row label='Valor da Conta:' value={`R$ ${accountValue}`} />
+        <Row label='Reais / Horas:' value={`R$ ${valuePerHour}/h`} />
+      */}
+      <Row label='Percentual de Jogados:' value={`${(100 * percentualPlayed).toFixed(0)}%`} />
+      <Row label='Total de Jogos:' value={numberOfGames} />
+    </Column>
+    <Column>
+      <Row label='Mais de 100 horas:' value={time100plus} />
+      <Row label='100 a 10 horas:' value={time100to10} />
+      <Row label='10 a 1 horas:' value={time10to1} />
+    </Column>
+    <Column>
+      <Row label='Menos de 1 hora:' value={time1minus} />
+      <Row label='Nunca Jogados:' value={timeNeverPlayed} />
+    </Column>
+    <Column>
+      <Row label='Mais Jogado:' value={`${mostPlayed.name} (${mostPlayed.playtime.toFixed(1)} horas)`} />
+      <Row label='Powered by:' value={'IsThereAnyDeal.com'} />
+    </Column>
+  </Container>
+)
 Header.defaultProps = {
   mostPlayed: { name: 'N/A', playtime: 0 },
   hoursPlayed: 0,
