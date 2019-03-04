@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import DashboardView from './view'
 import { getOwnedGames } from '../../actions'
+import DashboardView from './view'
 
 const mapStateToProps = state => ({
   ownedGames: state.get('app').get('ownedGames'),

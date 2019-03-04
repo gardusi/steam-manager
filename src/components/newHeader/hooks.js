@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { SteamColors } from '../../globalStyles'
 
 export const tab = {
-  dashboard: 'dashboard',
-  statistics: 'statistics'
+  dashboard: '/dashboard',
+  statistics: '/statistics'
 }
 
 export const useTabSelector = (initialTab) => {

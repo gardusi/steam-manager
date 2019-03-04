@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Selector from 'react-select'
+import { Link } from 'react-router-dom'
 
 export const SteamColors = {
   primaryDark: '#171a21',
@@ -24,6 +25,9 @@ export const Label = styled.p`
 export const Value = styled.p`
   font-size: 16px;
   color: ${SteamColors.secondary};
+`
+export const RouterLink = styled(Link)`
+  text-decoration: none;
 `
 export const Button = styled.button`
   background: none;

@@ -1,32 +1,33 @@
 import { createBrowserHistory } from 'history'
-import { syncHistoryWithStore } from 'react-router-redux'
 import { applyMiddleware, compose, createStore } from 'redux'
 import { routerMiddleware } from 'connected-react-router/immutable'
 import { Map } from 'immutable'
 import thunk from 'redux-thunk'
-import reducers from './reducers'
+import createRootReducer from './reducers'
 
 export default (initialState = Map()) => {
-  const browserHistory = createBrowserHistory()
-  let middleware = applyMiddleware(thunk, routerMiddleware(browserHistory))
-  if (process.env.NODE_ENV !== 'production') {
-    const devToolsExtension = window.devToolsExtension
-    if (typeof devToolsExtension === 'function') {
-      middleware = compose(middleware, devToolsExtension())
-    }
-  }
+  // Creates the Browser History
+  const history = createBrowserHistory()
+
+  // Prepares a compose with Dev tools for debugging
+  const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
+  // Applies the thunk and router middlewares
+  let middleware = applyMiddleware(thunk, routerMiddleware(history))
+
+  // Creates the store using reducers, initialState and middlewares
   const store = createStore(
-    reducers(browserHistory),
+    createRootReducer(history),
     initialState,
-    compose(middleware)
+    composeEnhancer(middleware)
   )
+
+  // Hot reloader for reducers
   if (module.hot) {
     module.hot.accept('./reducers', () => {
-      store.replaceReducer(reducers(browserHistory))
+      store.replaceReducer(createRootReducer(history))
     })
   }
-  const history = syncHistoryWithStore(browserHistory, store, {
-    selectLocationState: state => state.get('routing')
-  })
+
   return [store, history]
 }
