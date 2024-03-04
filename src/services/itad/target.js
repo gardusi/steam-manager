@@ -1,7 +1,7 @@
 const corsProxy = 'https://cors-anywhere.herokuapp.com'
 const apiUrl = `${corsProxy}/https://api.isthereanydeal.com`
 
-const apiKey = '5478f09f50a818c61459be08515b616b5419393e'
+const apiKey = '<API-KEY>'
 
 const params = {
   plains: (appsId) => ({
