@@ -39,7 +39,6 @@ export const Button = styled.button`
   outline: inherit;
 `
 export const Select = styled(Selector)`
-  width: 50%;
-  height: 30px;
-  min-width: 110px;
+  width: 200px;
+  font-size: 14px;
 `

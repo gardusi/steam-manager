@@ -29,6 +29,12 @@ const loadOwnedGames = async () => {
     return { ...game, price, lowest }
   })
 
+  // Without ITAD prices there's no account value to show
+  if (gamePrices.length > 0) {
+    metadata.accountValue = gamesWithPrice.reduce((acc, game) => acc + game.price, 0)
+    metadata.valuePerHour = metadata.hoursPlayed ? metadata.accountValue / metadata.hoursPlayed : 0
+  }
+
   return { games: gamesWithPrice, metadata }
 }
 

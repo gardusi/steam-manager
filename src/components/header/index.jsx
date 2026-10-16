@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import Row from './row'
 import { SteamColors } from '../../globalStyles'
+import { formatPrice } from '../../utils/format'
 
 const Container = styled.div`
   display: flex;
@@ -20,16 +21,19 @@ const Header = ({
   time10to1 = 0,
   time1minus = 0,
   timeNeverPlayed = 0,
-  percentualPlayed = 0
+  percentualPlayed = 0,
+  accountValue,
+  valuePerHour
 }) => (
   <Container>
     <Column>
       <Row label='Tempo de Jogo:' value={`${hoursPlayed.toFixed(0)} horas`} />
-      {/*
-        VALUE: accountValue.toFixed(2).replace('.', ',')
-        <Row label='Valor da Conta:' value={`R$ ${accountValue}`} />
-        <Row label='Reais / Horas:' value={`R$ ${valuePerHour}/h`} />
-      */}
+      {accountValue != null && (
+        <>
+          <Row label='Valor da Conta:' value={formatPrice(accountValue)} />
+          <Row label='Reais / Hora:' value={`${formatPrice(valuePerHour)}/h`} />
+        </>
+      )}
       <Row label='Percentual de Jogados:' value={`${(100 * percentualPlayed).toFixed(0)}%`} />
       <Row label='Total de Jogos:' value={numberOfGames} />
     </Column>
