@@ -5,13 +5,16 @@ export const fetchStatus = {
   error: 'error'
 }
 
-const request = (endpoint) => new Promise((resolve, reject) => {
-  if (endpoint.params) endpoint.url += `?${Object.keys(endpoint.params).map(key => `${key}=${endpoint.params[key]}`).join('&')}`
-  fetch(endpoint.url)
-    .then(response => response.json())
-    .then(response => resolve(response))
-    .catch(error => reject(error))
-})
+const request = async ({ url, params, method = 'GET', body }) => {
+  const query = params ? `?${new URLSearchParams(params)}` : ''
+  const response = await fetch(`${url}${query}`, {
+    method,
+    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    body: body ? JSON.stringify(body) : undefined
+  })
+  if (!response.ok) throw new Error(`${method} ${url} failed with ${response.status}`)
+  return response.json()
+}
 export default request
 
 export { fetchOwnedGames } from './steam'

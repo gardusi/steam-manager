@@ -1,22 +1,31 @@
 import request from '..'
 import target from './target'
 
+const batchSize = 200
+
+const inBatches = async (items, fetchBatch) => {
+  const batches = []
+  for (let i = 0; i < items.length; i += batchSize) batches.push(items.slice(i, i + batchSize))
+  return Promise.all(batches.map(fetchBatch))
+}
+
+// Returns [{ appId, price, lowest }]. Without an ITAD key, prices are skipped.
 export const fetchGamePrices = async (appsId) => {
-  const { data: plains } = await request(target.getGamePlains(appsId))
-  const [{ data: prices }, { data: lowest }] = await Promise.all([
-    request(target.getGamePrices(plains)),
-    request(target.getGameLowest(plains))
-  ])
-  const gamePrices = Object.keys(plains).map(key => {
-    const appId = key.split('/')[1]
-    const [price, low] = [prices[plains[key]], lowest[plains[key]]]
-    const values = (price && price.list && price.list[0]) || { price_new: 0 }
+  if (!import.meta.env.ITAD_ENABLED) return []
+
+  // { 'app/10': '<itad id>' | null }
+  const lookups = Object.assign({}, ...await inBatches(appsId, batch => request(target.lookupGameIds(batch))))
+  const gameIds = Object.values(lookups).filter(Boolean)
+  const prices = (await inBatches(gameIds, batch => request(target.getGamePrices(batch)))).flat()
+  const pricesById = new Map(prices.map(item => [item.id, item]))
+
+  return Object.entries(lookups).map(([shopId, gameId]) => {
+    const item = pricesById.get(gameId)
+    // TODO: Read regular and cut for discounts
     return {
-      appId,
-      // TODO: Read price_old and price_cut for discounts
-      price: (values && values.price_new) || 0,
-      lowest: (low && low.price) || 0
+      appId: shopId.split('/')[1],
+      price: item?.deals?.[0]?.price?.amount ?? 0,
+      lowest: item?.historyLow?.all?.amount ?? 0
     }
   })
-  return gamePrices
 }

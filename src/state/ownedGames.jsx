@@ -23,8 +23,9 @@ const loadOwnedGames = async () => {
   const metadata = buildMetadata(games)
 
   const gamePrices = await fetchGamePrices(games.map(game => game.appId))
+  const pricesByAppId = new Map(gamePrices.map(item => [item.appId, item]))
   const gamesWithPrice = games.map(game => {
-    const { price, lowest } = gamePrices.find(item => item.appId === `${game.appId}`)
+    const { price = 0, lowest = 0 } = pricesByAppId.get(`${game.appId}`) ?? {}
     return { ...game, price, lowest }
   })
 
