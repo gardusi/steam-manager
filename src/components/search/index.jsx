@@ -102,7 +102,8 @@ const Search = ({
   totalCount,
   sortOptions = [],
   sortOption,
-  onSort = () => console.warn('onSort function was not set for Search')
+  onSort = () => console.warn('onSort function was not set for Search'),
+  children
 }) => (
   <Container>
     <SearchField>
@@ -137,6 +138,7 @@ const Search = ({
         styles={selectStyles}
       />
     </SortGroup>
+    {children}
   </Container>
 )
 export default Search

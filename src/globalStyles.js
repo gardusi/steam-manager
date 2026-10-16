@@ -103,6 +103,6 @@ export const VisuallyHidden = styled.span`
   white-space: nowrap;
 `
 export const Select = styled(Selector)`
-  width: 200px;
+  width: 220px;
   font-size: 14px;
 `

@@ -15,3 +15,26 @@ export const formatHours = (hours) => {
 }
 
 export const pluralize = (count, singular, plural) => `${formatNumber(count)} ${count === 1 ? singular : plural}`
+
+// 'auto' gives "ontem"/"hoje"; months and years read better as "há 1 mês" than "mês passado"
+const relative = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' })
+const relativeNumeric = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'always' })
+const day = 24 * 60 * 60 * 1000
+
+// 1710620914000 -> "há 2 anos", "há 1 mês", "ontem", "hoje"
+export const formatRelativeDate = (timestamp, now = Date.now()) => {
+  const days = Math.round((timestamp - now) / day)
+  if (days === 0) return 'hoje'
+  if (Math.abs(days) < 30) return relative.format(days, 'day')
+  if (Math.abs(days) < 365) return relativeNumeric.format(Math.round(days / 30), 'month')
+  return relativeNumeric.format(Math.round(days / 365), 'year')
+}
+
+// For "updated X ago" labels: "agora", "há 5 minutos", "há 2 horas", then days
+export const formatRelativeTime = (timestamp, now = Date.now()) => {
+  const minutes = Math.round((timestamp - now) / 60000)
+  if (minutes === 0) return 'agora'
+  if (Math.abs(minutes) < 60) return relative.format(minutes, 'minute')
+  if (Math.abs(minutes) < 24 * 60) return relative.format(Math.round(minutes / 60), 'hour')
+  return formatRelativeDate(timestamp, now)
+}

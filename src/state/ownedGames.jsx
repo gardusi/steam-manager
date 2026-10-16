@@ -1,21 +1,23 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { fetchStatus, fetchOwnedGames, fetchGamePrices } from '../services'
+import { costPerHour, playtimeBuckets } from '../utils/playtime'
+import { readCache, writeCache } from './cache'
 
 const OwnedGamesContext = createContext(null)
 
 const buildMetadata = (games) => {
-  const metadata = {
+  const buckets = Object.fromEntries(playtimeBuckets.map(bucket =>
+    [bucket.key, games.filter(game => bucket.test(game.playtime)).length]
+  ))
+  const timeNeverPlayed = buckets['nunca-jogados']
+  return {
     hoursPlayed: games.reduce((acc, game) => acc + game.playtime, 0),
     mostPlayed: games.reduce((max, game) => max.playtime < game.playtime ? game : max),
     numberOfGames: games.length,
-    time100plus: games.filter(game => game.playtime >= 100).length,
-    time100to10: games.filter(game => game.playtime < 100 && game.playtime >= 10).length,
-    time10to1: games.filter(game => game.playtime < 10 && game.playtime >= 1).length,
-    time1minus: games.filter(game => game.playtime < 1 && game.playtime >= 0.01).length,
-    timeNeverPlayed: games.filter(game => game.playtime < 0.01).length
+    buckets,
+    timeNeverPlayed,
+    percentualPlayed: 1 - timeNeverPlayed / games.length
   }
-  metadata.percentualPlayed = 1 - metadata.timeNeverPlayed / metadata.numberOfGames
-  return metadata
 }
 
 const loadOwnedGames = async () => {
@@ -26,7 +28,8 @@ const loadOwnedGames = async () => {
   const pricesByAppId = new Map(gamePrices.map(item => [item.appId, item]))
   const gamesWithPrice = games.map(game => {
     const { price = 0, lowest = 0 } = pricesByAppId.get(`${game.appId}`) ?? {}
-    return { ...game, price, lowest }
+    const withPrice = { ...game, price, lowest }
+    return { ...withPrice, costPerHour: costPerHour(withPrice) }
   })
 
   // Without ITAD prices there's no account value to show
@@ -38,29 +41,47 @@ const loadOwnedGames = async () => {
   return { games: gamesWithPrice, metadata }
 }
 
-const initialState = {
+const emptyState = {
   status: fetchStatus.idle,
   games: [],
   metadata: undefined,
+  updatedAt: null,
+  refreshing: false,
   error: null
 }
 
+// Starts from the cached library when there is one, so pages render immediately
+const initState = () => {
+  const cached = readCache()
+  return cached ? { ...emptyState, ...cached, status: fetchStatus.success } : emptyState
+}
+
 export const OwnedGamesProvider = ({ children }) => {
-  const [state, setState] = useState(initialState)
+  const [state, setState] = useState(initState)
   const [attempt, setAttempt] = useState(0)
   const reload = useCallback(() => setAttempt(current => current + 1), [])
 
   useEffect(() => {
     let cancelled = false
-    setState(current => ({ ...current, status: fetchStatus.fetching }))
+    // With data on screen, refresh in the background instead of showing a loading state
+    setState(current => current.status === fetchStatus.success
+      ? { ...current, refreshing: true, error: null }
+      : { ...current, status: fetchStatus.fetching, error: null })
 
     loadOwnedGames()
       .then(({ games, metadata }) => {
-        if (!cancelled) setState({ status: fetchStatus.success, games, metadata, error: null })
+        if (cancelled) return
+        const updatedAt = Date.now()
+        writeCache({ games, metadata, updatedAt })
+        setState({ ...emptyState, status: fetchStatus.success, games, metadata, updatedAt })
       })
       .catch(error => {
         console.error(error)
-        if (!cancelled) setState(current => ({ ...current, status: fetchStatus.error, error }))
+        if (cancelled) return
+        // Keep showing cached data when a refresh fails
+        setState(current => current.status === fetchStatus.success
+          ? { ...current, refreshing: false, error }
+          : { ...current, status: fetchStatus.error, error })
       })
 
     return () => { cancelled = true }

@@ -1,15 +1,17 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router'
 import BarList from '../../components/barList'
 import StatTile, { StatGrid } from '../../components/statTile'
 import StatusMessage from '../../components/statusMessage'
 import { Page, PageTitle, Panel, SectionTitle, SteamColors, space } from '../../globalStyles'
 import { fetchStatus } from '../../services'
 import { formatHours, formatNumber, formatPercent, formatPrice, pluralize } from '../../utils/format'
+import { minHoursForCostPerHour, playtimeBuckets } from '../../utils/playtime'
 
 const Panels = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
   gap: ${space(3)};
   margin-top: ${space(3)};
 `
@@ -22,14 +24,31 @@ const Attribution = styled.p`
     color: ${SteamColors.secondary};
   }
 `
+const PanelHeader = styled.div`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: ${space(3)};
 
-const playtimeBuckets = [
-  { key: 'time100plus', label: '100 h ou mais' },
-  { key: 'time100to10', label: '10 a 100 h' },
-  { key: 'time10to1', label: '1 a 10 h' },
-  { key: 'time1minus', label: 'Menos de 1 h' },
-  { key: 'timeNeverPlayed', label: 'Nunca jogados' }
-]
+  a {
+    font-size: 12px;
+    color: ${SteamColors.secondary};
+    white-space: nowrap;
+  }
+`
+const PanelHint = styled.p`
+  margin: -${space(2)} 0 ${space(3)};
+  font-size: 12px;
+  color: ${SteamColors.textMuted};
+`
+
+const costItems = (games) => games.map(game => ({
+  key: game.appId,
+  label: game.name,
+  value: game.costPerHour,
+  valueLabel: `${formatPrice(game.costPerHour)}/h`,
+  tooltip: `${formatPrice(game.price)} por ${formatHours(game.playtime)}`
+}))
 
 const StatisticsView = ({ games, metadata, status, onRetry }) => {
   const loading = status === fetchStatus.idle || status === fetchStatus.fetching
@@ -38,9 +57,10 @@ const StatisticsView = ({ games, metadata, status, onRetry }) => {
     ? playtimeBuckets.map(({ key, label }) => ({
       key,
       label,
-      value: metadata[key],
-      valueLabel: formatNumber(metadata[key]),
-      tooltip: `${pluralize(metadata[key], 'jogo', 'jogos')} · ${formatPercent(metadata[key] / metadata.numberOfGames)} da biblioteca`
+      value: metadata.buckets[key],
+      valueLabel: formatNumber(metadata.buckets[key]),
+      tooltip: `${pluralize(metadata.buckets[key], 'jogo', 'jogos')} · ${formatPercent(metadata.buckets[key] / metadata.numberOfGames)} da biblioteca`,
+      href: `/dashboard?faixa=${key}`
     }))
     : [], [metadata])
 
@@ -53,6 +73,11 @@ const StatisticsView = ({ games, metadata, status, onRetry }) => {
       tooltip: `${formatPercent(game.playtime / metadata.hoursPlayed)} do seu tempo total`
     }))
     : [], [games, metadata])
+
+  const costRanking = useMemo(() => {
+    const ranked = games.filter(game => game.costPerHour != null).toSorted((a, b) => a.costPerHour - b.costPerHour)
+    return { best: costItems(ranked.slice(0, 5)), worst: costItems(ranked.slice(-5).reverse()) }
+  }, [games])
 
   if (status === fetchStatus.error) {
     return (
@@ -103,6 +128,23 @@ const StatisticsView = ({ games, metadata, status, onRetry }) => {
             <SectionTitle>Mais jogados</SectionTitle>
             <BarList label='Cinco jogos com mais horas' items={topPlayed} />
           </Panel>
+          {hasPrices && costRanking.best.length > 0 && (
+            <>
+              <Panel>
+                <PanelHeader>
+                  <SectionTitle>Melhor custo por hora</SectionTitle>
+                  <Link to='/dashboard?ordem=custo-por-hora'>Ver todos</Link>
+                </PanelHeader>
+                <PanelHint>Preço atual dividido pelas horas jogadas, em jogos com {minHoursForCostPerHour} h ou mais</PanelHint>
+                <BarList label='Cinco jogos com menor custo por hora' items={costRanking.best} />
+              </Panel>
+              <Panel>
+                <SectionTitle>Pior custo por hora</SectionTitle>
+                <PanelHint>Os que mais custaram pelo pouco que foram jogados</PanelHint>
+                <BarList label='Cinco jogos com maior custo por hora' items={costRanking.worst} />
+              </Panel>
+            </>
+          )}
         </Panels>
       )}
 
