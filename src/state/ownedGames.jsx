@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { fetchStatus, fetchOwnedGames, fetchGamePrices } from '../services'
 
 const OwnedGamesContext = createContext(null)
@@ -47,6 +47,8 @@ const initialState = {
 
 export const OwnedGamesProvider = ({ children }) => {
   const [state, setState] = useState(initialState)
+  const [attempt, setAttempt] = useState(0)
+  const reload = useCallback(() => setAttempt(current => current + 1), [])
 
   useEffect(() => {
     let cancelled = false
@@ -62,9 +64,10 @@ export const OwnedGamesProvider = ({ children }) => {
       })
 
     return () => { cancelled = true }
-  }, [])
+  }, [attempt])
 
-  return <OwnedGamesContext value={state}>{children}</OwnedGamesContext>
+  const value = useMemo(() => ({ ...state, reload }), [state, reload])
+  return <OwnedGamesContext value={value}>{children}</OwnedGamesContext>
 }
 
 export const useOwnedGames = () => {
