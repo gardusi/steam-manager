@@ -1,7 +1,7 @@
 const corsProxy = 'https://cors-anywhere.herokuapp.com'
 const apiUrl = `${corsProxy}/https://api.isthereanydeal.com`
 
-const apiKey = '<API-KEY>'
+const apiKey = import.meta.env.VITE_ITAD_API_KEY
 
 const params = {
   plains: (appsId) => ({

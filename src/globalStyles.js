@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Selector from 'react-select'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 export const SteamColors = {
   primaryDark: '#171a21',

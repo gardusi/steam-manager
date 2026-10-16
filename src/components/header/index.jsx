@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Row from './row'
 import { SteamColors } from '../../globalStyles'
@@ -14,15 +12,15 @@ const Container = styled.div`
 const Column = styled.div``
 
 const Header = ({
-  hoursPlayed,
-  mostPlayed,
-  numberOfGames,
-  time100plus,
-  time100to10,
-  time10to1,
-  time1minus,
-  timeNeverPlayed,
-  percentualPlayed
+  hoursPlayed = 0,
+  mostPlayed = { name: 'N/A', playtime: 0 },
+  numberOfGames = 0,
+  time100plus = 0,
+  time100to10 = 0,
+  time10to1 = 0,
+  time1minus = 0,
+  timeNeverPlayed = 0,
+  percentualPlayed = 0
 }) => (
   <Container>
     <Column>
@@ -46,30 +44,8 @@ const Header = ({
     </Column>
     <Column>
       <Row label='Mais Jogado:' value={`${mostPlayed.name} (${mostPlayed.playtime.toFixed(1)} horas)`} />
-      <Row label='Powered by:' value={'IsThereAnyDeal.com'} />
+      <Row label='Powered by:' value='IsThereAnyDeal.com' />
     </Column>
   </Container>
 )
-Header.defaultProps = {
-  mostPlayed: { name: 'N/A', playtime: 0 },
-  hoursPlayed: 0,
-  numberOfGames: 0,
-  time100plus: 0,
-  time100to10: 0,
-  time10to1: 0,
-  time1minus: 0,
-  timeNeverPlayed: 0,
-  percentualPlayed: 0
-}
-Header.propTypes = {
-  mostPlayed: PropTypes.object.isRequired,
-  hoursPlayed: PropTypes.number.isRequired,
-  numberOfGames: PropTypes.number.isRequired,
-  time100plus: PropTypes.number.isRequired,
-  time100to10: PropTypes.number.isRequired,
-  time10to1: PropTypes.number.isRequired,
-  time1minus: PropTypes.number.isRequired,
-  timeNeverPlayed: PropTypes.number.isRequired,
-  percentualPlayed: PropTypes.number.isRequired
-}
 export default Header

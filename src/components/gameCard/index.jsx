@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import { Card, GameInfo, Image, ImageContainer, ImageOverlay, Link, Title, Hours, PlayButton } from './style'
 
 const GameCard = ({ game }) => (
@@ -20,7 +18,4 @@ const GameCard = ({ game }) => (
     </GameInfo>
   </Card>
 )
-GameCard.propTypes = {
-  game: PropTypes.object.isRequired
-}
 export default GameCard

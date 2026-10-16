@@ -9,7 +9,7 @@ export const fetchGamePrices = async (appsId) => {
   ])
   const gamePrices = Object.keys(plains).map(key => {
     const appId = key.split('/')[1]
-    const [ price, low ] = [ prices[plains[key]], lowest[plains[key]] ]
+    const [price, low] = [prices[plains[key]], lowest[plains[key]]]
     const values = (price && price.list && price.list[0]) || { price_new: 0 }
     return {
       appId,

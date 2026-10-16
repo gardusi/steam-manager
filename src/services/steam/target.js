@@ -1,8 +1,8 @@
 const corsProxy = 'https://cors-anywhere.herokuapp.com'
 const apiUrl = `${corsProxy}/https://api.steampowered.com`
 
-const apiKey = '6C07A0039600F983FF9DE827D6D95500'
-const steamId = '76561198061553967'
+const apiKey = import.meta.env.VITE_STEAM_API_KEY
+const steamId = import.meta.env.VITE_STEAM_ID
 
 const params = {
   filters: () => ({

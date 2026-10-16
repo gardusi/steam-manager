@@ -1,24 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 
-export const useOwnedGames = (props) => {
-  const [games, setGames] = useState([])
+export const useFilteredGames = (ownedGames) => {
+  const [query, setQuery] = useState('')
 
-  useEffect(() => {
-    props.getOwnedGames()
-  }, [])
-  useEffect(() => {
-    setGames(props.ownedGames)
-  }, [props.ownedGames])
+  const games = useMemo(() => {
+    if (!query) return ownedGames
+    const queryTokens = query.toLocaleLowerCase('en-US').split(/-| /)
+    return ownedGames.filter(game => {
+      const nameTokens = game.name.toLocaleLowerCase('en-US').split(/-| /)
+      return nameTokens.some(nt => queryTokens.some(qt => nt.startsWith(qt)))
+    })
+  }, [ownedGames, query])
 
-  const filterGames = (query) => {
-    if (!query) setGames(props.ownedGames)
-    else {
-      const queryTokens = query.toLocaleLowerCase('en-US').split(/-| /)
-      setGames(props.ownedGames.filter(game => {
-        const nameTokens = game.name.toLocaleLowerCase('en-US').split(/-| /)
-        return nameTokens.some(nt => queryTokens.some(qt => nt.startsWith(qt)))
-      }))
-    }
-  }
-  return [games, filterGames]
+  return [games, setQuery]
 }

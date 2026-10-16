@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Label, SteamColors } from '../../globalStyles'
 
@@ -14,7 +12,7 @@ const Input = styled.input`
   height: 30px;
   font-size: 14px;
 `
-const Search = props => {
+const Search = ({ onQuery = () => console.warn('onQuery function was not set for Search') }) => {
   return (
     <Container>
       <Label>Filtros de Busca: </Label>
@@ -22,14 +20,9 @@ const Search = props => {
       <Input
         type='text'
         placeholder='Nome do Jogo'
-        onChange={event => props.onQuery(event.target.value)} />
+        onChange={event => onQuery(event.target.value)}
+      />
     </Container>
   )
-}
-Search.defaultProps = {
-  onQuery: (query) => console.warn('onQuery function was not set for Search')
-}
-Search.propTypes = {
-  onQuery: PropTypes.func.isRequired
 }
 export default Search
