@@ -1,34 +1,19 @@
-const corsProxy = 'https://cors-anywhere.herokuapp.com'
-const apiUrl = `${corsProxy}/https://api.isthereanydeal.com`
+const apiUrl = '/api/itad'
 
-const apiKey = '<API-KEY>'
-
-const params = {
-  plains: (appsId) => ({
-    key: apiKey,
-    shop: 'steam',
-    ids: appsId.map(appId => `app%2F${appId}`).join()
-  }),
-  pricing: (plains) => ({
-    key: apiKey,
-    shops: 'steam',
-    country: 'BR',
-    plains: Object.values(plains).join()
-  })
-}
+// IsThereAnyDeal shop id for Steam
+const steamShopId = 61
 
 const target = {
-  getGamePlains: (appsId) => ({
-    url: `${apiUrl}/v01/game/plain/id`,
-    params: params.plains(appsId)
+  lookupGameIds: (appsId) => ({
+    url: `${apiUrl}/lookup/id/shop/${steamShopId}/v1`,
+    method: 'POST',
+    body: appsId.map(appId => `app/${appId}`)
   }),
-  getGamePrices: (plains) => ({
-    url: `${apiUrl}/v01/game/prices`,
-    params: params.pricing(plains)
-  }),
-  getGameLowest: (plains) => ({
-    url: `${apiUrl}/v01/game/lowest`,
-    params: params.pricing(plains)
+  getGamePrices: (gameIds) => ({
+    url: `${apiUrl}/games/prices/v3`,
+    method: 'POST',
+    params: { country: 'BR', shops: steamShopId },
+    body: gameIds
   })
 }
 

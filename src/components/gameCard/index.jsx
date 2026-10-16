@@ -1,6 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Card, GameInfo, Image, ImageContainer, ImageOverlay, Link, Title, Hours, PlayButton } from './style'
+import { Card, GameInfo, Image, ImageContainer, ImageOverlay, Link, Title, Hours, Price, Lowest, PlayButton } from './style'
+import { formatPrice } from '../../utils/format'
 
 const GameCard = ({ game }) => (
   <Card>
@@ -17,10 +16,13 @@ const GameCard = ({ game }) => (
         <Title>{game.name}</Title>
       </Link>
       <Hours>{game.playtime.toFixed(1)} Horas de jogo</Hours>
+      {game.price > 0 && (
+        <Price>
+          {formatPrice(game.price)}
+          {game.lowest > 0 && <Lowest> · menor histórico {formatPrice(game.lowest)}</Lowest>}
+        </Price>
+      )}
     </GameInfo>
   </Card>
 )
-GameCard.propTypes = {
-  game: PropTypes.object.isRequired
-}
 export default GameCard

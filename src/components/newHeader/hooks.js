@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLocation } from 'react-router'
 import { SteamColors } from '../../globalStyles'
 
 export const tab = {
@@ -6,11 +6,11 @@ export const tab = {
   statistics: '/statistics'
 }
 
-export const useTabSelector = (initialTab) => {
-  const [selectedTab, setTab] = useState(initialTab)
+export const useTabSelector = () => {
+  const { pathname: selectedTab } = useLocation()
 
   const dashColor = selectedTab === tab.dashboard ? SteamColors.secondary : SteamColors.accent
   const statsColor = selectedTab === tab.statistics ? SteamColors.secondary : SteamColors.accent
 
-  return [dashColor, statsColor, setTab]
+  return [dashColor, statsColor]
 }

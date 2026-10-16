@@ -1,20 +1,19 @@
-import React from 'react'
 import { tab, useTabSelector } from './hooks'
 import { Container, Tab, Label } from './style'
 import { RouterLink } from '../../globalStyles'
 
-const HeaderView = (props) => {
-  const [dashColor, statsColor, setTab] = useTabSelector(props.selectedTab)
+const HeaderView = () => {
+  const [dashColor, statsColor] = useTabSelector()
   return (
     <Container>
-      <Tab style={{ borderColor: dashColor }} onClick={() => setTab(tab.dashboard)}>
+      <Tab style={{ borderColor: dashColor }}>
         <RouterLink to={tab.dashboard}>
           <Label style={{ color: dashColor }}>
             Meus Jogos
           </Label>
         </RouterLink>
       </Tab>
-      <Tab style={{ borderColor: statsColor }} onClick={() => setTab(tab.statistics)}>
+      <Tab style={{ borderColor: statsColor }}>
         <RouterLink to={tab.statistics}>
           <Label style={{ color: statsColor }}>
             Estastísticas
@@ -23,8 +22,5 @@ const HeaderView = (props) => {
       </Tab>
     </Container>
   )
-}
-HeaderView.defaultProps = {
-  selectedTab: tab.dashboard
 }
 export default HeaderView

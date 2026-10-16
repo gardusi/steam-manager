@@ -43,6 +43,15 @@ export const Hours = styled.p`
   font-size: 15px;
   color: ${SteamColors.accent};
 `
+export const Price = styled.p`
+  font-size: 15px;
+  color: ${SteamColors.secondary};
+  padding-top: 5px;
+`
+export const Lowest = styled.span`
+  color: ${SteamColors.accent};
+  opacity: 0.7;
+`
 export const Link = styled.a`
   text-decoration: none;
 `
