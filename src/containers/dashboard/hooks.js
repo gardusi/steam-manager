@@ -23,5 +23,5 @@ export const useGameList = (ownedGames) => {
     return filtered.toSorted(sortOption.compare)
   }, [ownedGames, query, sortOption])
 
-  return { games, setQuery, sortOption, setSortOption }
+  return { games, query, setQuery, sortOption, setSortOption }
 }

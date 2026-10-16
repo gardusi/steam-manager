@@ -2,7 +2,7 @@ import { useOwnedGames } from '../../state/ownedGames'
 import StatisticsView from './view'
 
 const Statistics = () => {
-  const { metadata } = useOwnedGames()
-  return <StatisticsView ownedGamesMetadata={metadata} />
+  const { games, metadata, status, reload } = useOwnedGames()
+  return <StatisticsView games={games} metadata={metadata} status={status} onRetry={reload} />
 }
 export default Statistics
