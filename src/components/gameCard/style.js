@@ -156,6 +156,12 @@ export const Lowest = styled.p`
   color: ${SteamColors.textMuted};
   font-variant-numeric: tabular-nums;
 `
+export const CostPerHour = styled.p`
+  font-size: 13px;
+  font-weight: 600;
+  color: ${SteamColors.secondary};
+  font-variant-numeric: tabular-nums;
+`
 export const LowestBadge = styled.p`
   font-size: 11px;
   font-weight: 600;

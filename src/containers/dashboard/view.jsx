@@ -1,10 +1,12 @@
 import styled from 'styled-components'
-import { sortOptions, useGameList } from './hooks'
+import { useGameList } from './hooks'
+import FilterChips from '../../components/filterChips'
 import GameCard, { GameCardSkeleton } from '../../components/gameCard'
 import Search from '../../components/search'
 import StatusMessage from '../../components/statusMessage'
 import { Page, PageTitle, space } from '../../globalStyles'
 import { fetchStatus } from '../../services'
+import { playtimeBuckets } from '../../utils/playtime'
 
 const List = styled.div`
   display: flex;
@@ -12,9 +14,23 @@ const List = styled.div`
   gap: ${space(2)};
 `
 
+const emptyMessage = (query, bucket) => {
+  if (query && bucket) return `Nenhum jogo encontrado para “${query}” em ${bucket.label.toLowerCase()}`
+  if (query) return `Nenhum jogo encontrado para “${query}”`
+  return `Nenhum jogo em ${bucket.label.toLowerCase()}`
+}
+
 const DashboardView = ({ ownedGames, status, onRetry }) => {
-  const { games, query, setQuery, sortOption, setSortOption } = useGameList(ownedGames)
+  const {
+    games, query, setQuery, sortOptions, sortOption, setSortOption,
+    bucket, bucketCounts, setBucket, clearFilters
+  } = useGameList(ownedGames)
   const isLoading = status === fetchStatus.idle || status === fetchStatus.fetching
+
+  const filterOptions = [
+    { key: null, label: 'Todos', count: ownedGames.length },
+    ...playtimeBuckets.map(b => ({ key: b.key, label: b.label, count: bucketCounts[b.key] }))
+  ]
 
   const renderContent = () => {
     if (status === fetchStatus.error) {
@@ -36,20 +52,22 @@ const DashboardView = ({ ownedGames, status, onRetry }) => {
       )
     }
     if (games.length === 0) {
-      return query
+      return query || bucket
         ? (
             <StatusMessage
-              title={`Nenhum jogo encontrado para “${query}”`}
-              description='Confira a grafia ou tente outro termo.'
-              actionLabel='Limpar busca'
-              onAction={() => setQuery('')}
+              title={emptyMessage(query, bucket)}
+              description={query ? 'Confira a grafia ou tente outro termo.' : undefined}
+              actionLabel='Limpar filtros'
+              onAction={clearFilters}
             />
           )
         : <StatusMessage title='Sua biblioteca está vazia' />
     }
     return (
       <List>
-        {games.map(game => <GameCard game={game} key={game.appId} />)}
+        {games.map(game => (
+          <GameCard game={game} key={game.appId} showCostPerHour={sortOption.value === 'custo-por-hora'} />
+        ))}
       </List>
     )
   }
@@ -66,7 +84,16 @@ const DashboardView = ({ ownedGames, status, onRetry }) => {
         sortOptions={sortOptions}
         sortOption={sortOption}
         onSort={setSortOption}
-      />
+      >
+        {!isLoading && status !== fetchStatus.error && (
+          <FilterChips
+            label='Filtrar por tempo de jogo'
+            options={filterOptions}
+            active={bucket?.key ?? null}
+            onChange={setBucket}
+          />
+        )}
+      </Search>
       {renderContent()}
     </Page>
   )

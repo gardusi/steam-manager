@@ -11,6 +11,8 @@ export const fetchOwnedGames = async () => {
     link: `${storeUrl}/app/${game.appid}`,
     logoUrl: `${appsImageUrl}/${game.appid}/header.jpg`,
     playtime: game.playtime_forever / 60,
+    // Unix seconds; 0 when Steam never recorded a session
+    lastPlayed: game.rtime_last_played ? game.rtime_last_played * 1000 : null,
     name: game.name
   }))
   return ownedGames

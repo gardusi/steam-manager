@@ -1,14 +1,19 @@
 import { useState } from 'react'
 import {
   Card, ImageContainer, Image, ImageFallback, ImageOverlay, PlayButton,
-  GameInfo, Title, TitleLink, Playtime, PriceBlock, Price, Lowest, LowestBadge,
+  GameInfo, Title, TitleLink, Playtime, PriceBlock, Price, Lowest, LowestBadge, CostPerHour,
   SkeletonCard, SkeletonImage, SkeletonLine
 } from './style'
-import { formatHours, formatPrice } from '../../utils/format'
+import { formatHours, formatPrice, formatRelativeDate } from '../../utils/format'
+import { neverPlayedThreshold } from '../../utils/playtime'
 
-const playtimeLabel = (hours) => hours < 0.01 ? 'Nunca jogado' : `${formatHours(hours)} de jogo`
+const playtimeLabel = ({ playtime, lastPlayed }) => {
+  if (playtime < neverPlayedThreshold) return 'Nunca jogado'
+  const hours = `${formatHours(playtime)} de jogo`
+  return lastPlayed ? `${hours} · jogado ${formatRelativeDate(lastPlayed)}` : hours
+}
 
-const GameCard = ({ game }) => {
+const GameCard = ({ game, showCostPerHour = false }) => {
   const [imageFailed, setImageFailed] = useState(false)
   const atHistoricalLow = game.price > 0 && game.lowest > 0 && game.price <= game.lowest
 
@@ -40,11 +45,16 @@ const GameCard = ({ game }) => {
             {game.name}
           </TitleLink>
         </Title>
-        <Playtime>{playtimeLabel(game.playtime)}</Playtime>
+        <Playtime>{playtimeLabel(game)}</Playtime>
       </GameInfo>
       {game.price > 0 && (
         <PriceBlock>
           <Price>{formatPrice(game.price)}</Price>
+          {showCostPerHour && (
+            <CostPerHour>
+              {game.costPerHour != null ? `${formatPrice(game.costPerHour)}/h` : 'Menos de 1 h jogada'}
+            </CostPerHour>
+          )}
           {atHistoricalLow
             ? <LowestBadge>Menor preço histórico</LowestBadge>
             : game.lowest > 0 && <Lowest>Menor: {formatPrice(game.lowest)}</Lowest>}
