@@ -10,7 +10,7 @@ const OwnedGamesContext = createContext(null)
 dropCache('owned-games:v2')
 dropCache('owned-games:v3')
 
-const buildMetadata = (games) => {
+export const buildMetadata = (games) => {
   const buckets = Object.fromEntries(playtimeBuckets.map(bucket =>
     [bucket.key, games.filter(game => bucket.test(game.playtime)).length]
   ))

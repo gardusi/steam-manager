@@ -23,3 +23,4 @@ only works via `yarn start` or `yarn preview`, not as static files.
 - `yarn build` — production build in `dist/`
 - `yarn preview` — serve the production build
 - `yarn lint` — ESLint (neostandard)
+- `yarn test` — unit tests (Vitest); `yarn test:watch` while developing

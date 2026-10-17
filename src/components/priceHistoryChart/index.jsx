@@ -4,11 +4,10 @@ import {
   Wrapper, Insights, Insight, InsightValue, ChartArea, Tooltip, TooltipValue, TooltipMeta,
   TableToggle, Table, LiveRegion
 } from './style'
+import { discountInsights, nearestIndex, pointsInRange, priceScale, timeTicks, year } from './model'
 import { SteamColors } from '../../globalStyles'
 import { formatPrice, formatRelativeDate } from '../../utils/format'
 
-const day = 24 * 60 * 60 * 1000
-const year = 365 * day
 const height = 240
 const margin = { top: 20, right: 16, bottom: 28, left: 64 }
 
@@ -22,13 +21,6 @@ const ranges = [
   { key: 'tudo', label: 'Tudo', span: null }
 ]
 
-// Rounds tick steps to 1, 2 or 5 times a power of ten
-const niceStep = (max, count) => {
-  const raw = max / count
-  const power = 10 ** Math.floor(Math.log10(raw))
-  return [1, 2, 5, 10].map(m => m * power).find(step => step >= raw)
-}
-
 const useElementWidth = () => {
   const ref = useRef(null)
   const [width, setWidth] = useState(0)
@@ -40,30 +32,9 @@ const useElementWidth = () => {
   return [ref, width]
 }
 
-// Price changes in the selected range, plus a point at the range start (the price
-// in effect then) and one at "now" so the step line reaches today.
-const pointsInRange = (history, span, now) => {
-  const start = span ? now - span : history[0].date
-  const before = history.filter(point => point.date <= start).at(-1)
-  const inside = history.filter(point => point.date > start)
-  const points = before ? [{ ...before, date: start, carried: true }, ...inside] : inside
-  return [...points, { ...points.at(-1), date: now, carried: true }]
-}
-
 const describe = (point) => {
   const deal = point.cut > 0 ? `-${point.cut}%, de ${formatPrice(point.regular)}` : 'sem desconto'
   return `${formatPrice(point.price)} em ${formatDate(point.date)} (${deal})`
-}
-
-// Discount periods that started in the last year and when the latest one began
-const discountInsights = (history, now) => {
-  const starts = history.filter((point, i) => point.cut > 0 && !(history[i - 1]?.cut > 0))
-  const lastYear = starts.filter(point => point.date >= now - year)
-  return {
-    salesLastYear: lastYear.length,
-    biggestCutLastYear: Math.max(0, ...history.filter(p => p.date >= now - year).map(p => p.cut)),
-    lastSale: starts.at(-1)?.date ?? null
-  }
 }
 
 // Step chart of a game's Steam price over time, with the historical low as reference
@@ -86,25 +57,13 @@ const PriceHistoryChart = ({ history, steamLowest }) => {
   const innerWidth = Math.max(0, width - margin.left - margin.right)
   const innerHeight = height - margin.top - margin.bottom
   const maxPrice = Math.max(...points.map(p => Math.max(p.price, p.regular ?? 0)), steamLowest ?? 0)
-  const yStep = niceStep(maxPrice || 1, 4)
-  const yMax = Math.ceil((maxPrice * 1.05) / yStep) * yStep || yStep
+  const { max: yMax, ticks: yTicks } = priceScale(maxPrice)
   const x = (date) => margin.left + ((date - points[0].date) / (now - points[0].date || 1)) * innerWidth
   const y = (price) => margin.top + innerHeight - (price / yMax) * innerHeight
 
-  const yTicks = Array.from({ length: Math.floor(yMax / yStep) + 1 }, (_, i) => i * yStep)
   const xTicks = useMemo(() => {
-    const spanYears = (now - points[0].date) / year
-    const ticks = []
-    const cursor = new Date(points[0].date)
-    cursor.setDate(1)
-    cursor.setHours(0, 0, 0, 0)
-    const monthStep = spanYears > 3 ? 12 : spanYears > 1.5 ? 6 : spanYears > 0.5 ? 3 : 1
-    if (monthStep === 12) cursor.setMonth(0)
-    while (cursor.getTime() <= now) {
-      if (cursor.getTime() >= points[0].date) ticks.push(cursor.getTime())
-      cursor.setMonth(cursor.getMonth() + monthStep)
-    }
-    return { ticks, label: monthStep === 12 ? (t) => new Date(t).getFullYear() : (t) => monthFormat.format(t) }
+    const { ticks, yearly } = timeTicks(points[0].date, now)
+    return { ticks, label: yearly ? (t) => new Date(t).getFullYear() : (t) => monthFormat.format(t) }
   }, [points, now])
 
   const linePath = points.map((point, i) => i === 0
@@ -117,11 +76,7 @@ const PriceHistoryChart = ({ history, steamLowest }) => {
   const nearestChange = (clientX) => {
     const bounds = chartRef.current.getBoundingClientRect()
     const date = points[0].date + ((clientX - bounds.left - margin.left) / innerWidth) * (now - points[0].date)
-    let best = 0
-    changes.forEach((point, i) => {
-      if (Math.abs(point.date - date) < Math.abs(changes[best].date - date)) best = i
-    })
-    return best
+    return nearestIndex(changes, date)
   }
   const onKeyDown = (event) => {
     if (!changes.length) return
