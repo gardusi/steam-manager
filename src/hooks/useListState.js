@@ -46,9 +46,11 @@ export const useListState = (items, { sortOptions, filters, filterParam }) => {
     return next
   }), [setSearchParams, filterParam])
 
-  const filterCounts = useMemo(() => Object.fromEntries(filters.map(f =>
-    [f.key, items.filter(f.test).length]
-  )), [items, filters])
+  // Ready for <FilterChips>: "Todos" plus each filter, with how many items it matches
+  const filterOptions = useMemo(() => [
+    { key: null, label: 'Todos', count: items.length },
+    ...filters.map(f => ({ key: f.key, label: f.label, count: items.filter(f.test).length }))
+  ], [items, filters])
 
   const visibleItems = useMemo(
     () => applyListState(items, { query, filter, sortOption }),
@@ -62,8 +64,11 @@ export const useListState = (items, { sortOptions, filters, filterParam }) => {
     sortOption,
     setSortOption,
     filter,
-    filterCounts,
+    filterOptions,
     setFilter,
     clearFilters
   }
 }
+
+// Options marked `needsPrices` only make sense when prices were loaded
+export const availableOptions = (options, hasPrices) => options.filter(option => hasPrices || !option.needsPrices)

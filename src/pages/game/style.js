@@ -128,21 +128,6 @@ export const Description = styled.p`
   line-height: 1.6;
   color: ${SteamColors.accent};
 `
-export const SectionHeader = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: ${space(3)};
-`
-export const SectionNote = styled.p`
-  font-size: 12px;
-  color: ${SteamColors.textMuted};
-`
-export const PanelBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${space(4)};
-`
 export const SkeletonBlock = styled.div`
   height: ${({ $height }) => $height}px;
   border-radius: 2px;

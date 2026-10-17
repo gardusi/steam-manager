@@ -8,6 +8,7 @@ import { Page, PageTitle, Panel, SectionTitle, SteamColors, space } from '../../
 import { formatHours, formatNumber, formatPercent, formatPrice, pluralize } from '../../utils/format'
 import { describeError } from '../../utils/errorMessages'
 import { minHoursForCostPerHour, playtimeBuckets } from '../../domain/playtime'
+import { useLibrary } from '../../state/library'
 
 const Panels = styled.div`
   display: grid;
@@ -51,7 +52,8 @@ const costItems = (games) => games.map(game => ({
   href: `/game/${game.appId}`
 }))
 
-const StatisticsView = ({ games, metadata, isLoading: loading, isError, error, onRetry }) => {
+const StatisticsPage = () => {
+  const { games, metadata, isLoading: loading, isError, error, reload: onRetry } = useLibrary()
   const distribution = useMemo(() => metadata
     ? playtimeBuckets.map(({ key, label }) => ({
       key,
@@ -166,4 +168,4 @@ const StatisticsView = ({ games, metadata, isLoading: loading, isError, error, o
     </Page>
   )
 }
-export default StatisticsView
+export default StatisticsPage
