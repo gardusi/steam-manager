@@ -5,9 +5,14 @@ const Tile = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${space(1)};
+  min-width: 0;
   padding: ${space(4)} ${space(5)};
   background: ${SteamColors.surface};
   border-radius: ${radius};
+
+  @media (max-width: 560px) {
+    padding: ${space(3)} ${space(4)};
+  }
 `
 const TileLabel = styled.p`
   font-size: 13px;
@@ -15,6 +20,10 @@ const TileLabel = styled.p`
 `
 const Value = styled.p`
   font-size: 26px;
+
+  @media (max-width: 560px) {
+    font-size: 20px;
+  }
   font-weight: 600;
   line-height: 1.2;
   color: ${SteamColors.textBright};
@@ -34,6 +43,12 @@ export const StatGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: ${space(3)};
+
+  /* Two per row on phones so the tiles don't push the content off screen */
+  @media (max-width: 560px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: ${space(2)};
+  }
 `
 
 const StatTile = ({ label, value, hint, loading }) => (
