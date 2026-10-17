@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import HistoricalLow from '../gameRow/historicalLow'
 import { Price } from '../gameRow/style'
-import { SteamColors, VisuallyHidden, space } from '../../globalStyles'
+import { colors, VisuallyHidden, space } from '../../styles'
 import { formatPrice } from '../../utils/format'
 
 // Steam-style discount: green "-75%" block next to the old and new prices
@@ -17,29 +17,29 @@ const DiscountPct = styled.span`
   padding: 0 ${space(2)};
   font-size: 16px;
   font-weight: 700;
-  color: ${SteamColors.discount};
-  background: ${SteamColors.discountBg};
+  color: ${colors.discount};
+  background: ${colors.discountBg};
 `
 const DealPrices = styled.span`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   padding: ${space(1)} ${space(2)};
-  background: rgba(0, 0, 0, 0.25);
+  background: ${colors.surface};
   line-height: 1.2;
 `
 const RegularPrice = styled.s`
   font-size: 11px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 `
 const SalePrice = styled.span`
   font-size: 15px;
-  color: ${SteamColors.discount};
+  color: ${colors.discount};
   font-variant-numeric: tabular-nums;
 `
 const Unavailable = styled.p`
   font-size: 13px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 `
 
 // Current Steam price ({ price, regular, cut, steamLowest }) with discount and historical low

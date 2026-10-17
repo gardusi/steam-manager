@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import styled, { css, keyframes } from 'styled-components'
-import { SteamColors, reducedMotion, space } from '../../globalStyles'
+import { colors, reducedMotion, space, media } from '../../styles'
 import { formatRelativeTime } from '../../utils/format'
 
 const spin = keyframes`
@@ -14,9 +14,9 @@ const Container = styled.div`
 `
 const Text = styled.span`
   font-size: 12px;
-  color: ${({ $error }) => $error ? SteamColors.danger : SteamColors.textMuted};
+  color: ${({ $error }) => $error ? colors.danger : colors.textMuted};
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     display: none;
   }
 `
@@ -30,13 +30,13 @@ const RefreshButton = styled.button`
   border: none;
   border-radius: 50%;
   background: none;
-  color: ${SteamColors.accent};
+  color: ${colors.text};
   cursor: pointer;
   transition: background 150ms ease, color 150ms ease;
 
   &:hover:not(:disabled) {
-    background: ${SteamColors.surfaceHover};
-    color: ${SteamColors.textBright};
+    background: ${colors.surfaceRaised};
+    color: ${colors.textStrong};
   }
   &:disabled {
     cursor: default;

@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import BarList from '../../components/barList'
 import StatTile, { StatGrid } from '../../components/statTile'
 import StatusMessage from '../../components/statusMessage'
-import { Page, PageTitle, Panel, SectionTitle, SteamColors, space } from '../../globalStyles'
+import { Page, PageTitle, Panel, SectionTitle, colors, space } from '../../styles'
 import { formatHours, formatNumber, formatPercent, formatPrice, pluralize } from '../../utils/format'
 import { describeError } from '../../utils/errorMessages'
 import { minHoursForCostPerHour, playtimeBuckets } from '../../domain/playtime'
@@ -19,10 +19,10 @@ const Panels = styled.div`
 const Attribution = styled.p`
   margin-top: ${space(6)};
   font-size: 12px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 
   a {
-    color: ${SteamColors.secondary};
+    color: ${colors.brand};
   }
 `
 const PanelHeader = styled.div`
@@ -33,14 +33,14 @@ const PanelHeader = styled.div`
 
   a {
     font-size: 12px;
-    color: ${SteamColors.secondary};
+    color: ${colors.brand};
     white-space: nowrap;
   }
 `
 const PanelHint = styled.p`
   margin: -${space(2)} 0 ${space(3)};
   font-size: 12px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 `
 
 const costItems = (games) => games.map(game => ({

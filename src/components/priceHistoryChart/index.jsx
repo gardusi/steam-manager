@@ -5,15 +5,11 @@ import {
   TableToggle, Table, LiveRegion
 } from './style'
 import { discountInsights, nearestIndex, pointsInRange, priceScale, timeTicks, year } from './model'
-import { SteamColors } from '../../globalStyles'
-import { formatPrice, formatRelativeDate } from '../../utils/format'
+import { colors } from '../../styles'
+import { formatDate, formatMonthYear, formatPrice, formatRelativeDate } from '../../utils/format'
 
 const height = 240
 const margin = { top: 20, right: 16, bottom: 28, left: 64 }
-
-const dateFormat = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
-const monthFormat = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit' })
-const formatDate = (timestamp) => dateFormat.format(timestamp)
 
 const ranges = [
   { key: '1a', label: '1 ano', span: year },
@@ -63,7 +59,7 @@ const PriceHistoryChart = ({ history, steamLowest }) => {
 
   const xTicks = useMemo(() => {
     const { ticks, yearly } = timeTicks(points[0].date, now)
-    return { ticks, label: yearly ? (t) => new Date(t).getFullYear() : (t) => monthFormat.format(t) }
+    return { ticks, label: yearly ? (t) => new Date(t).getFullYear() : formatMonthYear }
   }, [points, now])
 
   const linePath = points.map((point, i) => i === 0
@@ -127,29 +123,29 @@ const PriceHistoryChart = ({ history, steamLowest }) => {
           <svg width={width} height={height} aria-hidden='true'>
             {yTicks.map(tick => (
               <g key={tick}>
-                <line x1={margin.left} x2={width - margin.right} y1={y(tick)} y2={y(tick)} stroke='rgba(255,255,255,0.08)' />
-                <text x={margin.left - 8} y={y(tick)} dy='0.32em' textAnchor='end' fontSize='11' fill={SteamColors.textMuted}>
+                <line x1={margin.left} x2={width - margin.right} y1={y(tick)} y2={y(tick)} stroke={colors.chartGrid} />
+                <text x={margin.left - 8} y={y(tick)} dy='0.32em' textAnchor='end' fontSize='11' fill={colors.textMuted}>
                   {formatPrice(tick)}
                 </text>
               </g>
             ))}
             {xTicks.ticks.map(tick => (
-              <text key={tick} x={x(tick)} y={height - 8} textAnchor='middle' fontSize='11' fill={SteamColors.textMuted}>
+              <text key={tick} x={x(tick)} y={height - 8} textAnchor='middle' fontSize='11' fill={colors.textMuted}>
                 {xTicks.label(tick)}
               </text>
             ))}
-            <path d={areaPath} fill={SteamColors.chart} opacity='0.1' />
-            <path d={linePath} fill='none' stroke={SteamColors.chart} strokeWidth='2' strokeLinejoin='round' />
+            <path d={areaPath} fill={colors.chart} opacity='0.1' />
+            <path d={linePath} fill='none' stroke={colors.chart} strokeWidth='2' strokeLinejoin='round' />
             {steamLowest > 0 && (
               <g>
                 <line
                   x1={margin.left} x2={width - margin.right} y1={y(steamLowest)} y2={y(steamLowest)}
-                  stroke={SteamColors.discount} strokeWidth='1' strokeDasharray='4 3'
+                  stroke={colors.discount} strokeWidth='1' strokeDasharray='4 3'
                 />
                 {/* Halo in the panel color keeps the label readable where the price line crosses it */}
                 <text
-                  x={width - margin.right} y={y(steamLowest) - 6} textAnchor='end' fontSize='11' fill={SteamColors.accent}
-                  stroke={SteamColors.primary} strokeWidth='4' strokeLinejoin='round' paintOrder='stroke'
+                  x={width - margin.right} y={y(steamLowest) - 6} textAnchor='end' fontSize='11' fill={colors.text}
+                  stroke={colors.background} strokeWidth='4' strokeLinejoin='round' paintOrder='stroke'
                 >
                   Mínimo histórico {formatPrice(steamLowest)}
                 </text>
@@ -157,8 +153,8 @@ const PriceHistoryChart = ({ history, steamLowest }) => {
             )}
             {active && (
               <g>
-                <line x1={x(active.date)} x2={x(active.date)} y1={margin.top} y2={margin.top + innerHeight} stroke='rgba(255,255,255,0.35)' />
-                <circle cx={x(active.date)} cy={y(active.price)} r='5' fill={SteamColors.chart} stroke={SteamColors.primary} strokeWidth='2' />
+                <line x1={x(active.date)} x2={x(active.date)} y1={margin.top} y2={margin.top + innerHeight} stroke={colors.chartCrosshair} />
+                <circle cx={x(active.date)} cy={y(active.price)} r='5' fill={colors.chart} stroke={colors.background} strokeWidth='2' />
               </g>
             )}
           </svg>

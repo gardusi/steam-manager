@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Link } from 'react-router'
-import { SteamColors, space } from '../../globalStyles'
+import { colors, space, shadows } from '../../styles'
 
 const List = styled.ul`
   list-style: none;
@@ -25,20 +25,20 @@ const Row = styled.div`
   text-decoration: none;
 
   &:hover, &:focus-visible {
-    background: rgba(255, 255, 255, 0.04);
+    background: ${colors.overlayHover};
   }
   &[href] {
     cursor: pointer;
   }
   /* Linked rows: underline the label on hover */
   &[href]:hover > span:first-child {
-    color: ${SteamColors.textBright};
+    color: ${colors.textStrong};
     text-decoration: underline;
   }
 `
 const RowLabel = styled.span`
   font-size: 13px;
-  color: ${SteamColors.accent};
+  color: ${colors.text};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -54,11 +54,11 @@ const Bar = styled.span`
   height: 16px;
   min-width: 2px;
   border-radius: 0 4px 4px 0;
-  background: ${SteamColors.chart};
+  background: ${colors.chart};
 `
 const BarValue = styled.span`
   font-size: 13px;
-  color: ${SteamColors.textBright};
+  color: ${colors.textStrong};
   white-space: nowrap;
 `
 const Tooltip = styled.span`
@@ -70,9 +70,9 @@ const Tooltip = styled.span`
   border-radius: 3px;
   font-size: 12px;
   white-space: nowrap;
-  color: ${SteamColors.textBright};
-  background: ${SteamColors.primaryDark};
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  color: ${colors.textStrong};
+  background: ${colors.backgroundDeep};
+  box-shadow: ${shadows.popover};
   pointer-events: none;
   opacity: 0;
   transition: opacity 100ms ease;

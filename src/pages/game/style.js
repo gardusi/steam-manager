@@ -1,20 +1,20 @@
 import styled from 'styled-components'
 import { Link } from 'react-router'
-import { SteamColors, maxContentWidth, radius, skeleton, space } from '../../globalStyles'
+import { colors, radius, skeleton, space, media, layout } from '../../styles'
 
 export const Hero = styled.header`
   position: relative;
   min-height: 300px;
   display: flex;
   align-items: flex-end;
-  background-color: ${SteamColors.primaryDark};
+  background-color: ${colors.backgroundDeep};
   background-image:
-    linear-gradient(to bottom, rgba(27, 40, 56, 0.1) 0%, rgba(27, 40, 56, 0.6) 55%, ${SteamColors.primary} 100%),
+    linear-gradient(to bottom, rgba(27, 40, 56, 0.1) 0%, rgba(27, 40, 56, 0.6) 55%, ${colors.background} 100%),
     ${({ $image }) => $image ? `url("${$image}")` : 'none'};
   background-size: cover;
   background-position: center top;
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     min-height: 220px;
   }
 `
@@ -24,30 +24,30 @@ export const HeroSkeleton = styled.div`
 `
 export const HeroInner = styled.div`
   width: 100%;
-  max-width: ${maxContentWidth};
+  max-width: ${layout.maxContentWidth};
   margin: 0 auto;
   padding: ${space(6)} ${space(4)} ${space(5)};
 `
 export const BackLink = styled(Link)`
   position: absolute;
   top: ${space(4)};
-  left: max(${space(4)}, calc((100% - ${maxContentWidth}) / 2 + ${space(4)}));
+  left: max(${space(4)}, calc((100% - ${layout.maxContentWidth}) / 2 + ${space(4)}));
   padding: ${space(1)} ${space(3)};
   border-radius: ${radius};
   font-size: 13px;
-  color: ${SteamColors.textBright};
+  color: ${colors.textStrong};
   text-decoration: none;
   background: rgba(23, 26, 33, 0.75);
 
   &:hover {
-    background: ${SteamColors.primaryDark};
+    background: ${colors.backgroundDeep};
   }
 `
 export const GameTitle = styled.h1`
   font-size: clamp(26px, 5vw, 40px);
   font-weight: 600;
   line-height: 1.15;
-  color: ${SteamColors.textBright};
+  color: ${colors.textStrong};
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 `
 export const Tags = styled.div`
@@ -60,7 +60,7 @@ export const Layout = styled.div`
   gap: ${space(4)};
   align-items: start;
 
-  @media (max-width: 860px) {
+  ${media.tablet} {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'aside' 'main';
   }
@@ -79,7 +79,7 @@ export const Aside = styled.aside`
   gap: ${space(4)};
   padding: ${space(5)};
   border-radius: ${radius};
-  background: ${SteamColors.surface};
+  background: ${colors.surface};
 `
 export const PriceArea = styled.div`
   display: flex;
@@ -100,12 +100,12 @@ export const ActionLink = styled.a`
   font-weight: 600;
   text-align: center;
   text-decoration: none;
-  color: ${SteamColors.textBright};
-  background: ${({ $primary }) => $primary ? SteamColors.play : SteamColors.surfaceHover};
+  color: ${colors.textStrong};
+  background: ${({ $primary }) => $primary ? colors.play : colors.surfaceRaised};
 
   &:hover {
-    background: ${({ $primary }) => $primary ? SteamColors.playHover : SteamColors.secondary};
-    color: ${({ $primary }) => $primary ? SteamColors.textBright : SteamColors.primaryDark};
+    background: ${({ $primary }) => $primary ? colors.playHover : colors.brand};
+    color: ${({ $primary }) => $primary ? colors.textStrong : colors.backgroundDeep};
   }
 `
 export const Facts = styled.dl`
@@ -116,17 +116,17 @@ export const Facts = styled.dl`
   font-size: 13px;
 
   dt {
-    color: ${SteamColors.textMuted};
+    color: ${colors.textMuted};
   }
   dd {
     margin: 0;
-    color: ${SteamColors.accent};
+    color: ${colors.text};
   }
 `
 export const Description = styled.p`
   font-size: 15px;
   line-height: 1.6;
-  color: ${SteamColors.accent};
+  color: ${colors.text};
 `
 export const SkeletonBlock = styled.div`
   height: ${({ $height }) => $height}px;

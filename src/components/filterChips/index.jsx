@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { SteamColors, space } from '../../globalStyles'
+import { colors, space, media } from '../../styles'
 import { formatNumber } from '../../utils/format'
 
 const Group = styled.div`
@@ -13,7 +13,7 @@ const Group = styled.div`
   margin: -2px;
 
   /* Fade the right edge on narrow screens to hint that the chips scroll */
-  @media (max-width: 760px) {
+  ${media.tablet} {
     padding-right: ${space(8)};
     mask-image: linear-gradient(to right, black calc(100% - ${space(8)}), transparent);
   }
@@ -25,17 +25,17 @@ const Chip = styled.button`
   gap: ${space(1.5)};
   height: 28px;
   padding: 0 ${space(3)};
-  border: 1px solid ${({ $active }) => $active ? SteamColors.secondary : SteamColors.border};
+  border: 1px solid ${({ $active }) => $active ? colors.brand : colors.border};
   border-radius: 14px;
   font: inherit;
   font-size: 12px;
-  color: ${({ $active }) => $active ? SteamColors.primaryDark : SteamColors.accent};
-  background: ${({ $active }) => $active ? SteamColors.secondary : 'transparent'};
+  color: ${({ $active }) => $active ? colors.backgroundDeep : colors.text};
+  background: ${({ $active }) => $active ? colors.brand : 'transparent'};
   cursor: pointer;
   transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
 
   &:hover {
-    border-color: ${SteamColors.secondary};
+    border-color: ${colors.brand};
   }
 `
 const ChipCount = styled.span`
