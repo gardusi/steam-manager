@@ -17,5 +17,5 @@ const request = async ({ url, params, method = 'GET', body }) => {
 }
 export default request
 
-export { fetchOwnedGames, fetchWishlist } from './steam'
-export { fetchGamePrices } from './itad'
+export { fetchOwnedGames, fetchWishlist, fetchStoreDetails, fetchAchievements } from './steam'
+export { fetchGamePrices, fetchPriceHistory } from './itad'

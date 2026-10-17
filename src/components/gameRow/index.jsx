@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import {
   Card, ImageContainer, Image, ImageFallback, ImageOverlay,
   GameInfo, Title, TitleLink, Subtitle,
@@ -6,7 +7,7 @@ import {
 } from './style'
 
 // Shared layout for a game in a list: header image (with an optional hover overlay),
-// title linking to the store, a subtitle line and a right-aligned aside (prices).
+// title linking to the game's page, a subtitle line and a right-aligned aside (prices).
 const GameRow = ({ game, overlay, subtitle, aside }) => {
   const [imageFailed, setImageFailed] = useState(false)
 
@@ -30,7 +31,7 @@ const GameRow = ({ game, overlay, subtitle, aside }) => {
       </ImageContainer>
       <GameInfo>
         <Title>
-          <TitleLink href={game.link} target='_blank' rel='noopener noreferrer'>
+          <TitleLink as={Link} to={`/game/${game.appId}`}>
             {game.name}
           </TitleLink>
         </Title>

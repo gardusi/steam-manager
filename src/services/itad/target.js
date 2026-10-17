@@ -14,6 +14,11 @@ const target = {
     method: 'POST',
     params: { country: 'BR', shops: steamShopId },
     body: gameIds
+  }),
+  // Without `since` ITAD only returns the last few months
+  getPriceHistory: (gameId) => ({
+    url: `${apiUrl}/games/history/v2`,
+    params: { id: gameId, country: 'BR', shops: steamShopId, since: '2010-01-01T00:00:00Z' }
   })
 }
 
