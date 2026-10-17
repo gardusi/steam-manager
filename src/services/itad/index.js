@@ -37,8 +37,15 @@ export const fetchPriceHistory = async (appId) => {
   const lookup = await request(target.lookupGameIds([appId]))
   const gameId = lookup[`app/${appId}`]
   if (!gameId) return null
-  const history = await request(target.getPriceHistory(gameId))
-  const points = history
+  return cleanPriceHistory(await request(target.getPriceHistory(gameId)))
+}
+
+// Turns ITAD history entries into [{ date, price, regular, cut }], oldest first.
+// ITAD occasionally records a paid game with a regular price of 0 for a few minutes
+// (e.g. Half-Life 2 on 2024-11-15). A real giveaway keeps the regular price and shows
+// a 100% cut, so these entries are collection glitches and are dropped.
+export const cleanPriceHistory = (entries) => {
+  const points = entries
     .map(entry => ({
       date: new Date(entry.timestamp).getTime(),
       price: entry.deal.price.amount,
@@ -46,9 +53,6 @@ export const fetchPriceHistory = async (appId) => {
       cut: entry.deal.cut
     }))
     .sort((a, b) => a.date - b.date)
-  // ITAD occasionally records a paid game with a regular price of 0 for a few minutes
-  // (e.g. Half-Life 2 on 2024-11-15). A real giveaway keeps the regular price and shows
-  // a 100% cut, so these entries are collection glitches and are dropped.
   const isPaid = points.some(point => point.regular > 0)
   return isPaid ? points.filter(point => point.regular > 0) : points
 }

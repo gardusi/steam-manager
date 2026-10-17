@@ -1,9 +1,19 @@
 import { useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router'
 
-const matchesQuery = (item, queryTokens) => {
-  const nameTokens = item.name.toLocaleLowerCase('en-US').split(/-| /)
-  return nameTokens.some(nt => queryTokens.some(qt => nt.startsWith(qt)))
+const tokenize = (text) => text.toLocaleLowerCase('en-US').split(/-| /)
+
+// Matches when any word of the name starts with any word of the query
+const matchesQuery = (item, queryTokens) =>
+  tokenize(item.name).some(nt => queryTokens.some(qt => nt.startsWith(qt)))
+
+// Filters by `filter` and `query`, then sorts with `sortOption.compare`
+export const applyListState = (items, { query, filter, sortOption }) => {
+  const queryTokens = tokenize(query)
+  return items
+    .filter(item => !filter || filter.test(item))
+    .filter(item => !query || matchesQuery(item, queryTokens))
+    .toSorted(sortOption.compare)
 }
 
 // Search, single-choice filter and sort for a list of named items, kept in the URL
@@ -40,13 +50,10 @@ export const useListState = (items, { sortOptions, filters, filterParam }) => {
     [f.key, items.filter(f.test).length]
   )), [items, filters])
 
-  const visibleItems = useMemo(() => {
-    const queryTokens = query.toLocaleLowerCase('en-US').split(/-| /)
-    return items
-      .filter(item => !filter || filter.test(item))
-      .filter(item => !query || matchesQuery(item, queryTokens))
-      .toSorted(sortOption.compare)
-  }, [items, query, filter, sortOption])
+  const visibleItems = useMemo(
+    () => applyListState(items, { query, filter, sortOption }),
+    [items, query, filter, sortOption]
+  )
 
   return {
     items: visibleItems,
