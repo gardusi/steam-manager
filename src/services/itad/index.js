@@ -1,4 +1,4 @@
-import request from '..'
+import request from '../http'
 import target from './target'
 import { inBatches } from '../batches'
 
@@ -21,7 +21,7 @@ export const fetchGamePrices = async (appsId) => {
     const item = pricesById.get(gameId)
     const deal = item?.deals?.[0]
     return {
-      appId: shopId.split('/')[1],
+      appId: Number(shopId.split('/')[1]),
       price: deal?.price?.amount ?? null,
       regular: deal?.regular?.amount ?? null,
       cut: deal?.cut ?? 0,

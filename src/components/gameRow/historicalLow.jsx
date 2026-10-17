@@ -1,6 +1,6 @@
 import { Lowest, LowestBadge } from './style'
 import { formatPrice } from '../../utils/format'
-import { isAtHistoricalLow } from '../../utils/prices'
+import { isAtHistoricalLow } from '../../domain/prices'
 
 const explanation = 'Menor preço já cobrado na Steam, segundo o IsThereAnyDeal'
 
