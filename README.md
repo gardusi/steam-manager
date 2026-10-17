@@ -10,6 +10,9 @@ Copy `.env.example` to `.env.local` and fill in:
 - `ITAD_API_KEY` — https://isthereanydeal.com/apps/my/ (optional; prices are skipped without it)
 - `VITE_STEAM_ID` — your 64-bit Steam ID
 
+The wishlist page needs your wishlist to be public: on your Steam profile, under
+Privacy Settings, set **Game details** to **Public**.
+
 API calls go through the Vite dev/preview server proxy (`/api/steam`, `/api/itad`), which
 adds the keys server side, so they never end up in the browser bundle. This means the app
 only works via `yarn start` or `yarn preview`, not as static files.

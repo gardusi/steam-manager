@@ -126,7 +126,7 @@ export const TitleLink = styled.a`
     text-decoration: underline;
   }
 `
-export const Playtime = styled.p`
+export const Subtitle = styled.p`
   font-size: 13px;
   color: ${SteamColors.textMuted};
 `
@@ -141,8 +141,10 @@ export const PriceBlock = styled.div`
   @media (max-width: 560px) {
     align-self: start;
     flex-direction: row;
-    align-items: baseline;
-    gap: ${space(2)};
+    flex-wrap: wrap;
+    align-items: center;
+    gap: ${space(1)} ${space(2)};
+    min-width: 0;
     padding-bottom: ${space(2)};
   }
 `

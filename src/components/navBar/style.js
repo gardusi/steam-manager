@@ -47,6 +47,10 @@ export const Nav = styled.nav`
   display: flex;
   align-self: stretch;
   gap: ${space(6)};
+
+  @media (max-width: 640px) {
+    gap: ${space(4)};
+  }
 `
 export const NavItem = styled(NavLink)`
   display: flex;
@@ -67,5 +71,23 @@ export const NavItem = styled(NavLink)`
   &.active {
     color: ${SteamColors.secondary};
     border-bottom-color: ${SteamColors.secondary};
+  }
+`
+// The short label is only for screen width; the long one stays in the accessibility tree
+export const LongLabel = styled.span`
+  @media (max-width: 640px) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+`
+export const ShortLabel = styled.span`
+  display: none;
+
+  @media (max-width: 640px) {
+    display: inline;
   }
 `

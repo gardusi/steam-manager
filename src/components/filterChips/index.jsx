@@ -11,6 +11,12 @@ const Group = styled.div`
   /* Room for the focus outline inside the scroll container */
   padding: 2px;
   margin: -2px;
+
+  /* Fade the right edge on narrow screens to hint that the chips scroll */
+  @media (max-width: 760px) {
+    padding-right: ${space(8)};
+    mask-image: linear-gradient(to right, black calc(100% - ${space(8)}), transparent);
+  }
 `
 const Chip = styled.button`
   flex: none;
