@@ -6,6 +6,7 @@ import Search from '../../components/search'
 import StatusMessage from '../../components/statusMessage'
 import { Page, PageTitle, space } from '../../globalStyles'
 import { fetchStatus } from '../../services'
+import { describeError } from '../../utils/errorMessages'
 import { playtimeBuckets } from '../../utils/playtime'
 
 const List = styled.div`
@@ -20,7 +21,7 @@ const emptyMessage = (query, bucket) => {
   return `Nenhum jogo em ${bucket.label.toLowerCase()}`
 }
 
-const DashboardView = ({ ownedGames, status, onRetry }) => {
+const DashboardView = ({ ownedGames, status, error, onRetry }) => {
   const {
     games, query, setQuery, sortOptions, sortOption, setSortOption,
     bucket, bucketCounts, setBucket, clearFilters
@@ -38,7 +39,7 @@ const DashboardView = ({ ownedGames, status, onRetry }) => {
         <StatusMessage
           tone='error'
           title='Não foi possível carregar sua biblioteca'
-          description='Verifique sua conexão e as chaves de API no .env.local.'
+          description={describeError(error)}
           actionLabel='Tentar novamente'
           onAction={onRetry}
         />

@@ -1,6 +1,7 @@
 import request from '..'
 import target from './target'
 import { inBatches } from '../batches'
+import { ApiError } from '../errors'
 
 const storeUrl = 'https://store.steampowered.com'
 const appsImageUrl = 'https://cdn.cloudflare.steamstatic.com/steam/apps'
@@ -12,7 +13,10 @@ const appLinks = (appId) => ({
 
 export const fetchOwnedGames = async () => {
   const { response } = await request(target.getOwnedGames())
-  const ownedGames = response.games.map((game) => ({
+  // A public library always has game_count (0 when empty); Steam answers an empty
+  // `response` when the profile's game details aren't public
+  if (response.game_count === undefined) throw new ApiError('private-profile', { service: 'steam' })
+  const ownedGames = (response.games ?? []).map((game) => ({
     appId: game.appid,
     ...appLinks(game.appid),
     playtime: game.playtime_forever / 60,
@@ -88,7 +92,10 @@ export const fetchAchievements = async (appId) => {
   if (definitions.length === 0) return []
 
   const [player, global] = await Promise.all([
-    request(target.getPlayerAchievements(appId)),
+    // Steam answers 403 "Profile is not public" when it won't show this player's progress
+    request(target.getPlayerAchievements(appId)).catch(error => {
+      throw error.status === 403 ? new ApiError('private-profile', { service: 'steam', status: 403, cause: error }) : error
+    }),
     request(target.getGlobalAchievementPercentages(appId)).catch(() => null)
   ])
   const progress = new Map((player.playerstats?.achievements ?? []).map(a => [a.apiname, a]))

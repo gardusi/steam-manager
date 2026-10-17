@@ -7,6 +7,7 @@ import StatusMessage from '../../components/statusMessage'
 import { Page, PageTitle, Panel, SectionTitle, SteamColors, space } from '../../globalStyles'
 import { fetchStatus } from '../../services'
 import { formatHours, formatNumber, formatPercent, formatPrice, pluralize } from '../../utils/format'
+import { describeError } from '../../utils/errorMessages'
 import { minHoursForCostPerHour, playtimeBuckets } from '../../utils/playtime'
 
 const Panels = styled.div`
@@ -51,7 +52,7 @@ const costItems = (games) => games.map(game => ({
   href: `/game/${game.appId}`
 }))
 
-const StatisticsView = ({ games, metadata, status, onRetry }) => {
+const StatisticsView = ({ games, metadata, status, error, onRetry }) => {
   const loading = status === fetchStatus.idle || status === fetchStatus.fetching
 
   const distribution = useMemo(() => metadata
@@ -89,7 +90,7 @@ const StatisticsView = ({ games, metadata, status, onRetry }) => {
         <StatusMessage
           tone='error'
           title='Não foi possível carregar suas estatísticas'
-          description='Verifique sua conexão e as chaves de API no .env.local.'
+          description={describeError(error)}
           actionLabel='Tentar novamente'
           onAction={onRetry}
         />
@@ -98,6 +99,16 @@ const StatisticsView = ({ games, metadata, status, onRetry }) => {
   }
 
   const hasPrices = metadata?.accountValue != null
+
+  if (!loading && metadata?.numberOfGames === 0) {
+    return (
+      <Page>
+        <title>Estatísticas · Steam Manager</title>
+        <PageTitle>Estatísticas</PageTitle>
+        <StatusMessage title='Sua biblioteca está vazia' description='As estatísticas aparecem quando houver jogos na sua conta.' />
+      </Page>
+    )
+  }
 
   return (
     <Page>

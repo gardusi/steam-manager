@@ -7,6 +7,7 @@ import StatusMessage from '../../components/statusMessage'
 import { ReleaseTags, Tag } from '../../components/wishlistCard'
 import { Page, Panel, SectionTitle } from '../../globalStyles'
 import { fetchStatus } from '../../services'
+import { describeError } from '../../utils/errorMessages'
 import { formatHours, formatPrice, formatRelativeDate } from '../../utils/format'
 import { minHoursForCostPerHour, neverPlayedThreshold } from '../../utils/playtime'
 import {
@@ -49,7 +50,7 @@ const PriceSection = ({ history, steamLowest }) => {
   let body
   if (isLoading(history)) body = <SkeletonBlock $height={300} aria-label='Carregando histórico de preço' />
   else if (history.status === fetchStatus.error) {
-    body = <StatusMessage tone='error' title='Não foi possível carregar o histórico de preço' actionLabel='Tentar novamente' onAction={history.reload} />
+    body = <StatusMessage tone='error' title='Não foi possível carregar o histórico de preço' description={describeError(history.error)} actionLabel='Tentar novamente' onAction={history.reload} />
   } else if (!history.data?.length) {
     body = <SectionNote>O IsThereAnyDeal não tem histórico de preço deste jogo na Steam.</SectionNote>
   } else body = <PriceHistoryChart history={history.data} steamLowest={steamLowest} />
@@ -74,7 +75,7 @@ const AchievementsSection = ({ achievements }) => {
       <StatusMessage
         tone='error'
         title='Não foi possível carregar suas conquistas'
-        description='As conquistas precisam estar públicas: no perfil da Steam, em Privacidade, deixe “Detalhes dos jogos” como Público.'
+        description={describeError(achievements.error)}
         actionLabel='Tentar novamente'
         onAction={achievements.reload}
       />

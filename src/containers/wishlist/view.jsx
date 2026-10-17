@@ -8,6 +8,7 @@ import StatusMessage from '../../components/statusMessage'
 import WishlistCard from '../../components/wishlistCard'
 import { Page, PageTitle, space } from '../../globalStyles'
 import { fetchStatus } from '../../services'
+import { describeError, publicProfileHint } from '../../utils/errorMessages'
 import { formatNumber, formatPrice } from '../../utils/format'
 
 const List = styled.div`
@@ -25,7 +26,7 @@ const emptyMessage = (query, filter) => {
   return `Nenhum jogo em ${filter.label.toLowerCase()}`
 }
 
-const WishlistView = ({ items, status, onRetry }) => {
+const WishlistView = ({ items, status, error, onRetry }) => {
   const {
     items: visibleItems, query, setQuery, sortOptions, sortOption, setSortOption,
     filters, filter, filterCounts, setFilter, clearFilters, hasPrices, summary
@@ -44,7 +45,7 @@ const WishlistView = ({ items, status, onRetry }) => {
         <StatusMessage
           tone='error'
           title='Não foi possível carregar sua lista de desejos'
-          description='A lista de desejos precisa estar pública: no perfil da Steam, em Privacidade, deixe “Detalhes dos jogos” como Público.'
+          description={describeError(error)}
           actionLabel='Tentar novamente'
           onAction={onRetry}
         />
@@ -70,7 +71,7 @@ const WishlistView = ({ items, status, onRetry }) => {
         : (
             <StatusMessage
               title='Sua lista de desejos está vazia'
-              description='Se ela tem jogos, confira se está pública no seu perfil da Steam.'
+              description={`Se ela tem jogos, a lista pode estar privada. ${publicProfileHint}`}
             />
           )
     }
