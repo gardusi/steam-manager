@@ -29,3 +29,26 @@ export const fetchGamePrices = async (appsId) => {
     }
   })
 }
+
+// Steam price changes for one game, oldest first: [{ date, price, regular, cut }].
+// Returns null when ITAD doesn't know the game or no key is configured.
+export const fetchPriceHistory = async (appId) => {
+  if (!import.meta.env.ITAD_ENABLED) return null
+  const lookup = await request(target.lookupGameIds([appId]))
+  const gameId = lookup[`app/${appId}`]
+  if (!gameId) return null
+  const history = await request(target.getPriceHistory(gameId))
+  const points = history
+    .map(entry => ({
+      date: new Date(entry.timestamp).getTime(),
+      price: entry.deal.price.amount,
+      regular: entry.deal.regular.amount,
+      cut: entry.deal.cut
+    }))
+    .sort((a, b) => a.date - b.date)
+  // ITAD occasionally records a paid game with a regular price of 0 for a few minutes
+  // (e.g. Half-Life 2 on 2024-11-15). A real giveaway keeps the regular price and shows
+  // a 100% cut, so these entries are collection glitches and are dropped.
+  const isPaid = points.some(point => point.regular > 0)
+  return isPaid ? points.filter(point => point.regular > 0) : points
+}

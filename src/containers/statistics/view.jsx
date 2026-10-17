@@ -47,7 +47,8 @@ const costItems = (games) => games.map(game => ({
   label: game.name,
   value: game.costPerHour,
   valueLabel: `${formatPrice(game.costPerHour)}/h`,
-  tooltip: `${formatPrice(game.price)} por ${formatHours(game.playtime)}`
+  tooltip: `${formatPrice(game.price)} por ${formatHours(game.playtime)}`,
+  href: `/game/${game.appId}`
 }))
 
 const StatisticsView = ({ games, metadata, status, onRetry }) => {
@@ -70,7 +71,8 @@ const StatisticsView = ({ games, metadata, status, onRetry }) => {
       label: game.name,
       value: game.playtime,
       valueLabel: formatHours(game.playtime),
-      tooltip: `${formatPercent(game.playtime / metadata.hoursPlayed)} do seu tempo total`
+      tooltip: `${formatPercent(game.playtime / metadata.hoursPlayed)} do seu tempo total`,
+      href: `/game/${game.appId}`
     }))
     : [], [games, metadata])
 

@@ -47,3 +47,65 @@ export const fetchWishlist = async () => {
     }
   })
 }
+
+const assetsUrl = 'https://shared.akamai.steamstatic.com/store_item_assets'
+// Literal placeholder in Steam's asset_url_format, e.g. "steam/apps/220/${FILENAME}?t=..."
+const filenamePlaceholder = '$' + '{FILENAME}'
+
+// Steam Deck compatibility category from the store
+const deckCompatibility = { 1: 'unsupported', 2: 'playable', 3: 'verified' }
+
+export const fetchStoreDetails = async (appId) => {
+  const { response } = await request(target.getStoreDetails(appId))
+  const store = response.store_items?.[0]
+  if (!store?.name) return null
+  const release = store.release ?? {}
+  const assets = store.assets ?? {}
+  const assetUrl = (file) => file && assets.asset_url_format
+    ? `${assetsUrl}/${assets.asset_url_format.replace(filenamePlaceholder, file)}`
+    : null
+  return {
+    appId,
+    ...appLinks(appId),
+    name: store.name,
+    description: store.basic_info?.short_description ?? '',
+    developers: store.basic_info?.developers?.map(d => d.name) ?? [],
+    publishers: store.basic_info?.publishers?.map(p => p.name) ?? [],
+    releaseDate: release.steam_release_date ? release.steam_release_date * 1000 : null,
+    comingSoon: Boolean(store.is_coming_soon ?? release.is_coming_soon),
+    earlyAccess: Boolean(store.is_early_access ?? release.is_early_access),
+    heroUrl: assetUrl(assets.library_hero),
+    deck: deckCompatibility[store.platforms?.steam_deck_compat_category] ?? 'unknown'
+  }
+}
+
+// All achievements of a game merged with the user's progress and global rarity:
+// [{ id, name, description, hidden, icon, iconLocked, unlocked, unlockedAt, percent }]
+// Returns [] for games without achievements.
+export const fetchAchievements = async (appId) => {
+  const schema = await request(target.getAchievementSchema(appId))
+  const definitions = schema.game?.availableGameStats?.achievements ?? []
+  if (definitions.length === 0) return []
+
+  const [player, global] = await Promise.all([
+    request(target.getPlayerAchievements(appId)),
+    request(target.getGlobalAchievementPercentages(appId)).catch(() => null)
+  ])
+  const progress = new Map((player.playerstats?.achievements ?? []).map(a => [a.apiname, a]))
+  const rarity = new Map((global?.achievementpercentages?.achievements ?? []).map(a => [a.name, Number(a.percent)]))
+
+  return definitions.map(definition => {
+    const mine = progress.get(definition.name)
+    return {
+      id: definition.name,
+      name: definition.displayName,
+      description: definition.description ?? '',
+      hidden: Boolean(definition.hidden),
+      icon: definition.icon,
+      iconLocked: definition.icongray,
+      unlocked: Boolean(mine?.achieved),
+      unlockedAt: mine?.unlocktime ? mine.unlocktime * 1000 : null,
+      percent: rarity.get(definition.name) ?? null
+    }
+  })
+}
