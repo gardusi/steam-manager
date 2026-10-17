@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import StatusMessage from '../statusMessage'
-import { Panel, SectionTitle, SteamColors, skeleton, space } from '../../globalStyles'
+import { Panel, SectionTitle, colors, skeleton, space } from '../../styles'
 import { describeError } from '../../utils/errorMessages'
 
 const Body = styled.div`
@@ -15,7 +15,7 @@ const Placeholder = styled.div`
 `
 const Note = styled.p`
   font-size: 12px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 `
 
 // A titled panel whose content loads on its own: skeleton → error with retry →

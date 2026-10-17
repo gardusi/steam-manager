@@ -16,6 +16,17 @@ export const formatHours = (hours) => {
 
 export const pluralize = (count, singular, plural) => `${formatNumber(count)} ${count === 1 ? singular : plural}`
 
+const shortDate = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+const longDate = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+const monthYear = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit' })
+
+// "25/11/2020"
+export const formatDate = (timestamp) => shortDate.format(timestamp)
+// "16 de novembro de 2004"
+export const formatLongDate = (timestamp) => longDate.format(timestamp)
+// "jan. de 26", for chart axes
+export const formatMonthYear = (timestamp) => monthYear.format(timestamp)
+
 // 'auto' gives "ontem"/"hoje"; months and years read better as "há 1 mês" than "mês passado"
 const relative = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'auto' })
 const relativeNumeric = new Intl.RelativeTimeFormat('pt-BR', { numeric: 'always' })

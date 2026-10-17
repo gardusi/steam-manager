@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button, SteamColors, space } from '../../globalStyles'
+import { Button, colors, space } from '../../styles'
 
 const Container = styled.div`
   display: flex;
@@ -11,10 +11,10 @@ const Container = styled.div`
 `
 const Title = styled.p`
   font-size: 18px;
-  color: ${({ $tone }) => $tone === 'error' ? SteamColors.danger : SteamColors.textBright};
+  color: ${({ $tone }) => $tone === 'error' ? colors.danger : colors.textStrong};
 `
 const Description = styled.p`
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
   max-width: 420px;
 `
 

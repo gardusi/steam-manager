@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { GameRowSkeleton } from '../gameRow'
 import StatusMessage from '../statusMessage'
-import { space } from '../../globalStyles'
+import { space } from '../../styles'
 import { describeError } from '../../utils/errorMessages'
 
 const List = styled.div`

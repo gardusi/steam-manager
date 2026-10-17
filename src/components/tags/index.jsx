@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { SteamColors, space } from '../../globalStyles'
+import { colors, space } from '../../styles'
 
 export const Tag = styled.span`
   display: inline-block;
@@ -7,8 +7,8 @@ export const Tag = styled.span`
   padding: 1px ${space(1.5)};
   border-radius: 2px;
   font-size: 11px;
-  color: ${SteamColors.accent};
-  background: ${SteamColors.surfaceHover};
+  color: ${colors.text};
+  background: ${colors.surfaceRaised};
 `
 
 const year = (timestamp) => new Date(timestamp).getFullYear()

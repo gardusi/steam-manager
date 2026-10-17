@@ -7,17 +7,15 @@ import StatTile, { StatGrid } from '../../components/statTile'
 import StatusMessage from '../../components/statusMessage'
 import { ReleaseTags, Tag } from '../../components/tags'
 import { costPerHour, isPlayed } from '../../domain/playtime'
-import { Page } from '../../globalStyles'
+import { Page } from '../../styles'
 import { isValidAppId, useGameDetails } from '../../state/game'
 import { useLibrary } from '../../state/library'
 import { useWishlist } from '../../state/wishlist'
-import { formatHours, formatPrice, formatRelativeDate } from '../../utils/format'
+import { formatHours, formatLongDate, formatPrice, formatRelativeDate } from '../../utils/format'
 import {
   Hero, HeroSkeleton, HeroInner, BackLink, GameTitle, Tags, Layout, Main, Aside, PriceArea,
   Actions, ActionLink, Facts, Description, SkeletonBlock
 } from './style'
-
-const dateFormat = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
 
 // Text plus a symbol, so the state never relies on color alone
 const deckLabels = {
@@ -67,10 +65,10 @@ const GameFacts = ({ details, wished }) => {
       {details.developers.length > 0 && (<><dt>Desenvolvedora</dt><dd>{details.developers.join(', ')}</dd></>)}
       {publishers.length > 0 && (<><dt>Publicadora</dt><dd>{publishers.join(', ')}</dd></>)}
       <dt>Lançamento</dt>
-      <dd>{details.comingSoon || !details.releaseDate ? 'Em breve' : dateFormat.format(details.releaseDate)}</dd>
+      <dd>{details.comingSoon || !details.releaseDate ? 'Em breve' : formatLongDate(details.releaseDate)}</dd>
       <dt>Steam Deck</dt>
       <dd>{deckLabels[details.deck]}</dd>
-      {wished && (<><dt>Na lista desde</dt><dd>{dateFormat.format(wished.addedAt)}</dd></>)}
+      {wished && (<><dt>Na lista desde</dt><dd>{formatLongDate(wished.addedAt)}</dd></>)}
     </Facts>
   )
 }

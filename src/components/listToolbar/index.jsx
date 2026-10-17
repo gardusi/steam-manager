@@ -1,11 +1,17 @@
 import { useId } from 'react'
 import styled from 'styled-components'
-import { Label, Select, SteamColors, VisuallyHidden, radius, space } from '../../globalStyles'
+import Selector from 'react-select'
+import { Label, colors, VisuallyHidden, radius, space, media, layout } from '../../styles'
 import { formatNumber, pluralize } from '../../utils/format'
+
+const Select = styled(Selector)`
+  width: 220px;
+  font-size: 14px;
+`
 
 const Container = styled.div`
   position: sticky;
-  top: 64px;
+  top: ${layout.navHeight};
   z-index: 5;
   display: flex;
   flex-wrap: wrap;
@@ -13,7 +19,7 @@ const Container = styled.div`
   gap: ${space(3)} ${space(6)};
   margin: 0 -${space(4)} ${space(4)};
   padding: ${space(3)} ${space(4)};
-  background: rgba(23, 26, 33, 0.92);
+  background: ${colors.toolbar};
   backdrop-filter: blur(6px);
   border-radius: ${radius};
 `
@@ -29,7 +35,7 @@ const SearchIcon = styled.svg`
   width: 16px;
   height: 16px;
   transform: translateY(-50%);
-  fill: ${SteamColors.textMuted};
+  fill: ${colors.textMuted};
   pointer-events: none;
 `
 const Input = styled.input`
@@ -37,26 +43,26 @@ const Input = styled.input`
   height: 36px;
   padding: 0 ${space(3)} 0 ${space(9)};
   font-size: 14px;
-  color: ${SteamColors.textBright};
-  background: ${SteamColors.primary};
-  border: 1px solid ${SteamColors.border};
+  color: ${colors.textStrong};
+  background: ${colors.background};
+  border: 1px solid ${colors.border};
   border-radius: ${radius};
   transition: border-color 150ms ease;
 
   &::placeholder {
-    color: ${SteamColors.textMuted};
+    color: ${colors.textMuted};
   }
   &:hover {
-    border-color: ${SteamColors.textMuted};
+    border-color: ${colors.textMuted};
   }
   &:focus {
-    border-color: ${SteamColors.secondary};
+    border-color: ${colors.brand};
     outline: none;
   }
 `
 const Count = styled.p`
   font-size: 13px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
   white-space: nowrap;
 `
 const SortGroup = styled.div`
@@ -65,7 +71,7 @@ const SortGroup = styled.div`
   gap: ${space(2)};
   margin-left: auto;
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     width: 100%;
 
     & > div {
@@ -78,22 +84,22 @@ const selectStyles = {
     ...base,
     minHeight: 36,
     cursor: 'pointer',
-    background: SteamColors.primary,
-    borderColor: isFocused ? SteamColors.secondary : SteamColors.border,
+    background: colors.background,
+    borderColor: isFocused ? colors.brand : colors.border,
     boxShadow: 'none',
-    '&:hover': { borderColor: isFocused ? SteamColors.secondary : SteamColors.textMuted }
+    '&:hover': { borderColor: isFocused ? colors.brand : colors.textMuted }
   }),
-  singleValue: (base) => ({ ...base, color: SteamColors.textBright }),
-  menu: (base) => ({ ...base, background: SteamColors.primary, border: `1px solid ${SteamColors.border}`, zIndex: 20 }),
+  singleValue: (base) => ({ ...base, color: colors.textStrong }),
+  menu: (base) => ({ ...base, background: colors.background, border: `1px solid ${colors.border}`, zIndex: 20 }),
   option: (base, { isFocused, isSelected }) => ({
     ...base,
     cursor: 'pointer',
-    background: isFocused ? SteamColors.surfaceHover : 'transparent',
-    color: isSelected ? SteamColors.secondary : SteamColors.accent,
+    background: isFocused ? colors.surfaceRaised : 'transparent',
+    color: isSelected ? colors.brand : colors.text,
     fontWeight: isSelected ? 600 : 400
   }),
   indicatorSeparator: () => ({ display: 'none' }),
-  dropdownIndicator: (base) => ({ ...base, padding: 6, color: SteamColors.textMuted })
+  dropdownIndicator: (base) => ({ ...base, padding: 6, color: colors.textMuted })
 }
 
 // Sticky bar above a game list: search, result count, sort and (as children) filters

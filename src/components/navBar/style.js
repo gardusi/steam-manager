@@ -1,24 +1,24 @@
 import styled from 'styled-components'
 import { Link, NavLink } from 'react-router'
-import { SteamColors, maxContentWidth, space } from '../../globalStyles'
+import { colors, space, media, layout, shadows, visuallyHidden } from '../../styles'
 
 export const Bar = styled.header`
   position: sticky;
   top: 0;
   z-index: 10;
-  background: ${SteamColors.primaryDark};
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  background: ${colors.backgroundDeep};
+  box-shadow: ${shadows.bar};
 `
 export const Inner = styled.div`
   display: flex;
   align-items: center;
   gap: ${space(8)};
-  max-width: ${maxContentWidth};
-  height: 64px;
+  max-width: ${layout.maxContentWidth};
+  height: ${layout.navHeight};
   margin: 0 auto;
   padding: 0 ${space(4)};
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     gap: ${space(4)};
   }
 `
@@ -27,7 +27,7 @@ export const Brand = styled(Link)`
   align-items: center;
   gap: ${space(2)};
   text-decoration: none;
-  color: ${SteamColors.textBright};
+  color: ${colors.textStrong};
 `
 export const Logo = styled.img`
   filter: invert(1);
@@ -39,7 +39,7 @@ export const BrandName = styled.span`
   letter-spacing: 0.08em;
   text-transform: uppercase;
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     display: none;
   }
 `
@@ -48,7 +48,7 @@ export const Nav = styled.nav`
   align-self: stretch;
   gap: ${space(6)};
 
-  @media (max-width: 640px) {
+  ${media.compactNav} {
     gap: ${space(4)};
   }
 `
@@ -62,32 +62,27 @@ export const NavItem = styled(NavLink)`
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
-  color: ${SteamColors.accent};
+  color: ${colors.text};
   transition: color 150ms ease, border-color 150ms ease;
 
   &:hover {
-    color: ${SteamColors.textBright};
+    color: ${colors.textStrong};
   }
   &.active {
-    color: ${SteamColors.secondary};
-    border-bottom-color: ${SteamColors.secondary};
+    color: ${colors.brand};
+    border-bottom-color: ${colors.brand};
   }
 `
 // The short label is only for screen width; the long one stays in the accessibility tree
 export const LongLabel = styled.span`
-  @media (max-width: 640px) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
+  ${media.compactNav} {
+    ${visuallyHidden}
   }
 `
 export const ShortLabel = styled.span`
   display: none;
 
-  @media (max-width: 640px) {
+  ${media.compactNav} {
     display: inline;
   }
 `

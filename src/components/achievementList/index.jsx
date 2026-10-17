@@ -1,14 +1,13 @@
 import { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import FilterChips from '../filterChips'
-import { Button, SteamColors, VisuallyHidden, radius, space } from '../../globalStyles'
-import { formatNumber, formatPercent } from '../../utils/format'
+import { Button, colors, VisuallyHidden, radius, space } from '../../styles'
+import { formatDate, formatNumber, formatPercent } from '../../utils/format'
 
 const initialVisible = 12
 // Steam calls achievements unlocked by fewer than 10% of players rare
 const rareThreshold = 10
 
-const dateFormat = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
 const percentFormat = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 })
 
 const Summary = styled.div`
@@ -25,31 +24,31 @@ const Progress = styled.div`
 `
 const ProgressLabel = styled.p`
   font-size: 13px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 
   strong {
     font-size: 16px;
-    color: ${SteamColors.textBright};
+    color: ${colors.textStrong};
   }
 `
 // Meter: the unfilled track is a lighter step of the fill's hue
 const Track = styled.div`
   height: 8px;
   border-radius: 4px;
-  background: rgba(61, 155, 233, 0.2);
+  background: ${colors.chartTrack};
   overflow: hidden;
 `
 const Fill = styled.div`
   height: 100%;
   border-radius: 4px;
-  background: ${SteamColors.chart};
+  background: ${colors.chart};
 `
 const Highlight = styled.p`
   font-size: 13px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 
   strong {
-    color: ${SteamColors.textBright};
+    color: ${colors.textStrong};
     font-weight: 600;
   }
 `
@@ -68,7 +67,7 @@ const Item = styled.li`
   align-items: center;
   padding: ${space(2)};
   border-radius: ${radius};
-  background: ${({ $unlocked }) => $unlocked ? 'rgba(61, 155, 233, 0.08)' : 'rgba(0, 0, 0, 0.15)'};
+  background: ${({ $unlocked }) => $unlocked ? colors.chartTint : colors.surface};
 `
 const Icon = styled.img`
   width: 48px;
@@ -84,24 +83,24 @@ const Text = styled.div`
 `
 const Name = styled.p`
   font-size: 14px;
-  color: ${({ $unlocked }) => $unlocked ? SteamColors.textBright : SteamColors.accent};
+  color: ${({ $unlocked }) => $unlocked ? colors.textStrong : colors.text};
 `
 const Description = styled.p`
   font-size: 12px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
   font-style: ${({ $hidden }) => $hidden ? 'italic' : 'normal'};
 `
 const Meta = styled.p`
   font-size: 11px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 `
 const RareTag = styled.span`
   margin-left: ${space(1.5)};
   padding: 0 ${space(1)};
   border-radius: 2px;
   font-weight: 600;
-  color: ${SteamColors.primaryDark};
-  background: #e4c368;
+  color: ${colors.backgroundDeep};
+  background: ${colors.rare};
 `
 const ShowAll = styled(Button)`
   align-self: center;
@@ -141,7 +140,7 @@ const AchievementItem = ({ achievement }) => {
         </Name>
         {description && <Description $hidden={secret}>{description}</Description>}
         <Meta>
-          {achievement.unlocked && achievement.unlockedAt && `Desbloqueada em ${dateFormat.format(achievement.unlockedAt)} · `}
+          {achievement.unlocked && achievement.unlockedAt && `Desbloqueada em ${formatDate(achievement.unlockedAt)} · `}
           {achievement.percent != null
             ? `${percentFormat.format(achievement.percent)}% dos jogadores`
             : 'Raridade indisponível'}

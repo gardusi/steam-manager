@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { SteamColors, radius, reducedMotion, skeleton, space } from '../../globalStyles'
+import { colors, radius, reducedMotion, skeleton, space, media, shadows } from '../../styles'
 
 const imageWidth = 230
 const mobileImageWidth = 120
@@ -11,16 +11,16 @@ export const Card = styled.article`
   align-items: center;
   gap: ${space(4)};
   padding-right: ${space(4)};
-  background: ${SteamColors.surface};
+  background: ${colors.surface};
   border-radius: ${radius};
   overflow: hidden;
   transition: background 150ms ease;
 
   &:hover, &:focus-within {
-    background: ${SteamColors.cardHover};
+    background: ${colors.surfaceHover};
   }
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     grid-template-columns: ${mobileImageWidth}px 1fr;
     grid-template-areas: 'image info' 'image price';
     row-gap: ${space(1)};
@@ -32,9 +32,9 @@ export const ImageContainer = styled.div`
   position: relative;
   align-self: stretch;
   aspect-ratio: 460 / 215;
-  background: ${SteamColors.primaryDark};
+  background: ${colors.backgroundDeep};
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     align-self: center;
     width: 100%;
   }
@@ -54,8 +54,8 @@ export const ImageFallback = styled.div`
   font-size: 13px;
   font-weight: 600;
   text-align: center;
-  color: ${SteamColors.textMuted};
-  background: ${SteamColors.gradientLight};
+  color: ${colors.textMuted};
+  background: ${colors.imageFallback};
 `
 export const ImageOverlay = styled.div`
   position: absolute;
@@ -87,12 +87,12 @@ export const PlayButton = styled.a`
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-decoration: none;
-  color: ${SteamColors.textBright};
-  background: ${SteamColors.play};
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  color: ${colors.textStrong};
+  background: ${colors.play};
+  box-shadow: ${shadows.popover};
 
   &:hover {
-    background: ${SteamColors.playHover};
+    background: ${colors.playHover};
   }
   @media (hover: none) {
     padding: ${space(1)} ${space(2)};
@@ -107,7 +107,7 @@ export const GameInfo = styled.div`
   min-width: 0;
   padding: ${space(3)} 0;
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     align-self: end;
     padding: ${space(2)} 0 0;
   }
@@ -118,17 +118,17 @@ export const Title = styled.h3`
   line-height: 1.3;
 `
 export const TitleLink = styled.a`
-  color: ${SteamColors.textBright};
+  color: ${colors.textStrong};
   text-decoration: none;
 
   &:hover {
-    color: ${SteamColors.secondary};
+    color: ${colors.brand};
     text-decoration: underline;
   }
 `
 export const Subtitle = styled.p`
   font-size: 13px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 `
 export const PriceBlock = styled.div`
   grid-area: price;
@@ -138,7 +138,7 @@ export const PriceBlock = styled.div`
   gap: ${space(1)};
   white-space: nowrap;
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     align-self: start;
     flex-direction: row;
     flex-wrap: wrap;
@@ -150,18 +150,18 @@ export const PriceBlock = styled.div`
 `
 export const Price = styled.p`
   font-size: 15px;
-  color: ${SteamColors.accent};
+  color: ${colors.text};
   font-variant-numeric: tabular-nums;
 `
 export const Lowest = styled.p`
   font-size: 12px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
   font-variant-numeric: tabular-nums;
 `
 export const CostPerHour = styled.p`
   font-size: 13px;
   font-weight: 600;
-  color: ${SteamColors.secondary};
+  color: ${colors.brand};
   font-variant-numeric: tabular-nums;
 `
 export const LowestBadge = styled.p`
@@ -169,8 +169,8 @@ export const LowestBadge = styled.p`
   font-weight: 600;
   padding: 2px ${space(1.5)};
   border-radius: 2px;
-  color: ${SteamColors.discount};
-  background: ${SteamColors.discountBg};
+  color: ${colors.discount};
+  background: ${colors.discountBg};
 `
 export const SkeletonCard = styled.div`
   display: grid;
@@ -178,11 +178,11 @@ export const SkeletonCard = styled.div`
   grid-template-areas: 'image info';
   align-items: center;
   gap: ${space(4)};
-  background: ${SteamColors.surface};
+  background: ${colors.surface};
   border-radius: ${radius};
   overflow: hidden;
 
-  @media (max-width: 560px) {
+  ${media.phone} {
     grid-template-columns: ${mobileImageWidth}px 1fr;
   }
 `

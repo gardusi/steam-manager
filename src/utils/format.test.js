@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
-  formatHours, formatNumber, formatPercent, formatPrice, formatRelativeDate, formatRelativeTime, pluralize
+  formatDate, formatHours, formatLongDate, formatMonthYear, formatNumber, formatPercent, formatPrice,
+  formatRelativeDate, formatRelativeTime, pluralize
 } from './format'
 
 // Intl puts a non-breaking space between "R$" and the number
@@ -42,6 +43,15 @@ describe('pluralize', () => {
     expect(pluralize(1, 'jogo', 'jogos')).toBe('1 jogo')
     expect(pluralize(0, 'jogo', 'jogos')).toBe('0 jogos')
     expect(pluralize(1200, 'jogo', 'jogos')).toBe('1.200 jogos')
+  })
+})
+
+describe('date formats', () => {
+  const date = new Date(2004, 10, 16).getTime()
+  it('formats short, long and month/year dates in pt-BR', () => {
+    expect(formatDate(date)).toBe('16/11/2004')
+    expect(formatLongDate(date)).toBe('16 de novembro de 2004')
+    expect(formatMonthYear(new Date(2026, 0, 1).getTime())).toBe('jan. de 26')
   })
 })
 

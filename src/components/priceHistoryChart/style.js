@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { SteamColors, VisuallyHidden, space } from '../../globalStyles'
+import { colors, VisuallyHidden, space, shadows } from '../../styles'
 
 export const Wrapper = styled.div`
   display: flex;
@@ -13,11 +13,11 @@ export const Insights = styled.div`
 `
 export const Insight = styled.p`
   font-size: 13px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 `
 export const InsightValue = styled.strong`
   font-weight: 600;
-  color: ${SteamColors.textBright};
+  color: ${colors.textStrong};
 `
 export const ChartArea = styled.div`
   position: relative;
@@ -32,8 +32,8 @@ export const Tooltip = styled.div`
   transform: translateX(-50%);
   padding: ${space(1.5)} ${space(2.5)};
   border-radius: 3px;
-  background: ${SteamColors.primaryDark};
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  background: ${colors.backgroundDeep};
+  box-shadow: ${shadows.popover};
   pointer-events: none;
   white-space: nowrap;
   text-align: center;
@@ -41,11 +41,11 @@ export const Tooltip = styled.div`
 export const TooltipValue = styled.p`
   font-size: 15px;
   font-weight: 600;
-  color: ${SteamColors.textBright};
+  color: ${colors.textStrong};
 `
 export const TooltipMeta = styled.p`
   font-size: 11px;
-  color: ${SteamColors.textMuted};
+  color: ${colors.textMuted};
 `
 export const LiveRegion = styled(VisuallyHidden)``
 
@@ -54,7 +54,7 @@ export const TableToggle = styled.details`
 
   summary {
     cursor: pointer;
-    color: ${SteamColors.secondary};
+    color: ${colors.brand};
     width: fit-content;
   }
 `
@@ -68,13 +68,13 @@ export const Table = styled.table`
   th, td {
     padding: ${space(1)} ${space(2)};
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid ${colors.chartGrid};
   }
   th {
     font-weight: 600;
-    color: ${SteamColors.textMuted};
+    color: ${colors.textMuted};
   }
   td {
-    color: ${SteamColors.accent};
+    color: ${colors.text};
   }
 `
