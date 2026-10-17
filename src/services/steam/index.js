@@ -1,4 +1,4 @@
-import request from '..'
+import request from '../http'
 import target from './target'
 import { inBatches } from '../batches'
 import { ApiError } from '../errors'

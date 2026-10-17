@@ -7,7 +7,6 @@ import StatTile, { StatGrid } from '../../components/statTile'
 import StatusMessage from '../../components/statusMessage'
 import WishlistCard from '../../components/wishlistCard'
 import { Page, PageTitle, space } from '../../globalStyles'
-import { fetchStatus } from '../../services'
 import { describeError, publicProfileHint } from '../../utils/errorMessages'
 import { formatNumber, formatPrice } from '../../utils/format'
 
@@ -26,13 +25,12 @@ const emptyMessage = (query, filter) => {
   return `Nenhum jogo em ${filter.label.toLowerCase()}`
 }
 
-const WishlistView = ({ items, status, error, onRetry }) => {
+const WishlistView = ({ items, isLoading, isError, error, onRetry }) => {
   const {
     items: visibleItems, query, setQuery, sortOptions, sortOption, setSortOption,
     filters, filter, filterCounts, setFilter, clearFilters, hasPrices, summary
   } = useWishlistView(items)
-  const isLoading = status === fetchStatus.idle || status === fetchStatus.fetching
-  const isReady = !isLoading && status !== fetchStatus.error
+  const isReady = !isLoading && !isError
 
   const filterOptions = [
     { key: null, label: 'Todos', count: items.length },
@@ -40,7 +38,7 @@ const WishlistView = ({ items, status, error, onRetry }) => {
   ]
 
   const renderContent = () => {
-    if (status === fetchStatus.error) {
+    if (isError) {
       return (
         <StatusMessage
           tone='error'
@@ -86,7 +84,7 @@ const WishlistView = ({ items, status, error, onRetry }) => {
     <Page>
       <title>Lista de desejos · Steam Manager</title>
       <PageTitle>Lista de desejos</PageTitle>
-      {status !== fetchStatus.error && (
+      {!isError && (
         <Summary aria-busy={isLoading}>
           <StatTile loading={isLoading} label='Jogos na lista' value={formatNumber(summary.count)} />
           {(isLoading || hasPrices) && (

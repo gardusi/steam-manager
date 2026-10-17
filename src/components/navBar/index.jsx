@@ -1,7 +1,6 @@
 import { Bar, Inner, Brand, Logo, BrandName, Nav, NavItem, LongLabel, ShortLabel } from './style'
 import SyncStatus from '../syncStatus'
-import { useOwnedGames } from '../../state/ownedGames'
-import { useWishlist } from '../../state/wishlist'
+import { useSyncStatus } from '../../state/sync'
 import logo from '../../assets/logo.png'
 
 // Short labels keep the three tabs on one line on phones
@@ -12,18 +11,7 @@ const navItems = [
 ]
 
 const NavBar = () => {
-  const library = useOwnedGames()
-  const wishlist = useWishlist()
-
-  // One status for both data sources: oldest update, refreshing/failed if either is
-  const updates = [library.updatedAt, wishlist.updatedAt].filter(Boolean)
-  const failed = (Boolean(library.error) && library.games.length > 0) ||
-    (Boolean(wishlist.error) && wishlist.items.length > 0)
-  const refreshAll = () => {
-    library.reload()
-    wishlist.reload()
-  }
-
+  const sync = useSyncStatus()
   return (
     <Bar>
       <Inner>
@@ -40,10 +28,10 @@ const NavBar = () => {
           ))}
         </Nav>
         <SyncStatus
-          updatedAt={updates.length ? Math.min(...updates) : null}
-          refreshing={library.refreshing || wishlist.refreshing}
-          failed={failed}
-          onRefresh={refreshAll}
+          updatedAt={sync.updatedAt}
+          refreshing={sync.refreshing}
+          failed={sync.failed}
+          onRefresh={sync.refreshAll}
         />
       </Inner>
     </Bar>

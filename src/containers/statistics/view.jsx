@@ -5,10 +5,9 @@ import BarList from '../../components/barList'
 import StatTile, { StatGrid } from '../../components/statTile'
 import StatusMessage from '../../components/statusMessage'
 import { Page, PageTitle, Panel, SectionTitle, SteamColors, space } from '../../globalStyles'
-import { fetchStatus } from '../../services'
 import { formatHours, formatNumber, formatPercent, formatPrice, pluralize } from '../../utils/format'
 import { describeError } from '../../utils/errorMessages'
-import { minHoursForCostPerHour, playtimeBuckets } from '../../utils/playtime'
+import { minHoursForCostPerHour, playtimeBuckets } from '../../domain/playtime'
 
 const Panels = styled.div`
   display: grid;
@@ -52,9 +51,7 @@ const costItems = (games) => games.map(game => ({
   href: `/game/${game.appId}`
 }))
 
-const StatisticsView = ({ games, metadata, status, error, onRetry }) => {
-  const loading = status === fetchStatus.idle || status === fetchStatus.fetching
-
+const StatisticsView = ({ games, metadata, isLoading: loading, isError, error, onRetry }) => {
   const distribution = useMemo(() => metadata
     ? playtimeBuckets.map(({ key, label }) => ({
       key,
@@ -82,7 +79,7 @@ const StatisticsView = ({ games, metadata, status, error, onRetry }) => {
     return { best: costItems(ranked.slice(0, 5)), worst: costItems(ranked.slice(-5).reverse()) }
   }, [games])
 
-  if (status === fetchStatus.error) {
+  if (isError) {
     return (
       <Page>
         <title>Estatísticas · Steam Manager</title>

@@ -1,8 +1,8 @@
-import { useOwnedGames } from '../../state/ownedGames'
+import { useLibrary } from '../../state/library'
 import StatisticsView from './view'
 
 const Statistics = () => {
-  const { games, metadata, status, error, reload } = useOwnedGames()
-  return <StatisticsView games={games} metadata={metadata} status={status} error={error} onRetry={reload} />
+  const { games, metadata, isLoading, isError, error, reload } = useLibrary()
+  return <StatisticsView games={games} metadata={metadata} isLoading={isLoading} isError={isError} error={error} onRetry={reload} />
 }
 export default Statistics

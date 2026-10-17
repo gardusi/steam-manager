@@ -6,10 +6,9 @@ import StatTile, { StatGrid } from '../../components/statTile'
 import StatusMessage from '../../components/statusMessage'
 import { ReleaseTags, Tag } from '../../components/wishlistCard'
 import { Page, Panel, SectionTitle } from '../../globalStyles'
-import { fetchStatus } from '../../services'
 import { describeError } from '../../utils/errorMessages'
 import { formatHours, formatPrice, formatRelativeDate } from '../../utils/format'
-import { minHoursForCostPerHour, neverPlayedThreshold } from '../../utils/playtime'
+import { costPerHour, isPlayed } from '../../domain/playtime'
 import {
   Hero, HeroSkeleton, HeroInner, BackLink, GameTitle, Tags, Layout, Main, Aside, PriceArea,
   Actions, ActionLink, Facts, Description, SectionHeader, SectionNote, PanelBody, SkeletonBlock
@@ -24,8 +23,6 @@ const deckLabels = {
   unsupported: '✕ Não suportado',
   unknown: 'Não avaliado'
 }
-
-const isLoading = (resource) => resource.status === fetchStatus.idle || resource.status === fetchStatus.fetching
 
 // "Voltar" returns to the previous page inside the app, or to the library on a direct visit
 const Back = () => {
@@ -48,8 +45,8 @@ const Back = () => {
 
 const PriceSection = ({ history, steamLowest }) => {
   let body
-  if (isLoading(history)) body = <SkeletonBlock $height={300} aria-label='Carregando histórico de preço' />
-  else if (history.status === fetchStatus.error) {
+  if (history.isLoading) body = <SkeletonBlock $height={300} aria-label='Carregando histórico de preço' />
+  else if (history.isError) {
     body = <StatusMessage tone='error' title='Não foi possível carregar o histórico de preço' description={describeError(history.error)} actionLabel='Tentar novamente' onAction={history.reload} />
   } else if (!history.data?.length) {
     body = <SectionNote>O IsThereAnyDeal não tem histórico de preço deste jogo na Steam.</SectionNote>
@@ -69,8 +66,8 @@ const PriceSection = ({ history, steamLowest }) => {
 
 const AchievementsSection = ({ achievements }) => {
   let body
-  if (isLoading(achievements)) body = <SkeletonBlock $height={160} aria-label='Carregando conquistas' />
-  else if (achievements.status === fetchStatus.error) {
+  if (achievements.isLoading) body = <SkeletonBlock $height={160} aria-label='Carregando conquistas' />
+  else if (achievements.isError) {
     body = (
       <StatusMessage
         tone='error'
@@ -97,7 +94,7 @@ const GameView = ({ valid, owned, wished, store, deal, history, achievements }) 
   const details = store.data
   const name = details?.name ?? owned?.name ?? wished?.name
 
-  if (!valid || (store.status === fetchStatus.success && !details && !owned && !wished)) {
+  if (!valid || (!store.isLoading && !store.isError && !details && !owned && !wished)) {
     return (
       <Page>
         <title>Jogo não encontrado · Steam Manager</title>
@@ -107,16 +104,14 @@ const GameView = ({ valid, owned, wished, store, deal, history, achievements }) 
   }
 
   const currentDeal = deal.data
-  const played = owned && owned.playtime >= neverPlayedThreshold
-  const costPerHour = owned && currentDeal?.price > 0 && owned.playtime >= minHoursForCostPerHour
-    ? currentDeal.price / owned.playtime
-    : null
+  const played = owned && isPlayed(owned)
+  const ownedCostPerHour = owned ? costPerHour({ price: currentDeal?.price, playtime: owned.playtime }) : null
   const publishers = details?.publishers.filter(p => !details.developers.includes(p)) ?? []
 
   return (
     <>
       {name && <title>{`${name} · Steam Manager`}</title>}
-      {isLoading(store) && !name
+      {store.isLoading && !name
         ? <HeroSkeleton aria-hidden='true' />
         : (
             <Hero $image={details?.heroUrl ?? (owned ?? wished)?.logoUrl}>
@@ -136,7 +131,7 @@ const GameView = ({ valid, owned, wished, store, deal, history, achievements }) 
         <Layout>
           <Aside aria-label='Preço e informações'>
             <PriceArea>
-              {isLoading(deal)
+              {deal.isLoading
                 ? <SkeletonBlock $height={40} style={{ width: 160 }} />
                 : <DealPrice deal={currentDeal} comingSoon={details?.comingSoon} />}
             </PriceArea>
@@ -169,8 +164,8 @@ const GameView = ({ valid, owned, wished, store, deal, history, achievements }) 
                 {played && (
                   <StatTile label='Jogado pela última vez' value={owned.lastPlayed ? formatRelativeDate(owned.lastPlayed) : 'Sem registro'} />
                 )}
-                {costPerHour != null && (
-                  <StatTile label='Custo por hora' value={`${formatPrice(costPerHour)}/h`} hint='Preço atual ÷ horas jogadas' />
+                {ownedCostPerHour != null && (
+                  <StatTile label='Custo por hora' value={`${formatPrice(ownedCostPerHour)}/h`} hint='Preço atual ÷ horas jogadas' />
                 )}
               </StatGrid>
             )}

@@ -1,7 +1,9 @@
 // Below this many hours a game counts as never played
 export const neverPlayedThreshold = 0.01
 
-// Playtime ranges shared by the statistics chart and the dashboard filter.
+export const isPlayed = (game) => game.playtime >= neverPlayedThreshold
+
+// Playtime ranges shared by the statistics chart and the library filter.
 // `key` is also the value of the `faixa` URL param.
 export const playtimeBuckets = [
   { key: '100h-ou-mais', label: '100 h ou mais', test: (hours) => hours >= 100 },
@@ -11,10 +13,8 @@ export const playtimeBuckets = [
   { key: 'nunca-jogados', label: 'Nunca jogados', test: (hours) => hours < neverPlayedThreshold }
 ]
 
-export const findBucket = (key) => playtimeBuckets.find(bucket => bucket.key === key)
-
 // Cost per hour only means something once a game has been played for a while
 export const minHoursForCostPerHour = 1
 
-export const costPerHour = (game) =>
-  game.price > 0 && game.playtime >= minHoursForCostPerHour ? game.price / game.playtime : null
+export const costPerHour = ({ price, playtime }) =>
+  price > 0 && playtime >= minHoursForCostPerHour ? price / playtime : null

@@ -1,19 +1,19 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
-import { OwnedGamesProvider } from './state/ownedGames'
-import { WishlistProvider } from './state/wishlist'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { createPersistOptions, queryClient, removeLegacyCache } from './state/queryClient'
 import App from './app'
 import './index.css'
+
+removeLegacyCache()
 
 createRoot(document.getElementById('react-root')).render(
   <StrictMode>
     <BrowserRouter>
-      <OwnedGamesProvider>
-        <WishlistProvider>
-          <App />
-        </WishlistProvider>
-      </OwnedGamesProvider>
+      <PersistQueryClientProvider client={queryClient} persistOptions={createPersistOptions()}>
+        <App />
+      </PersistQueryClientProvider>
     </BrowserRouter>
   </StrictMode>
 )

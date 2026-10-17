@@ -1,12 +1,10 @@
 import { useMemo } from 'react'
 import { useListState } from '../../hooks/useListState'
-import { neverPlayedThreshold, playtimeBuckets } from '../../utils/playtime'
+import { isPlayed, playtimeBuckets } from '../../domain/playtime'
 import { byName, nullsLast } from '../../utils/sort'
 
 const playedOnly = (compare) => (a, b) => {
-  const aPlayed = a.playtime >= neverPlayedThreshold
-  const bPlayed = b.playtime >= neverPlayedThreshold
-  if (aPlayed !== bPlayed) return aPlayed ? -1 : 1
+  if (isPlayed(a) !== isPlayed(b)) return isPlayed(a) ? -1 : 1
   return compare(a, b)
 }
 
@@ -17,8 +15,8 @@ export const sortOptions = [
   { value: 'menos-jogados', label: 'Menos jogados', compare: (a, b) => a.playtime - b.playtime },
   { value: 'recentes', label: 'Jogados recentemente', compare: nullsLast('lastPlayed', -1) },
   { value: 'esquecidos', label: 'Esquecidos', compare: playedOnly(nullsLast('lastPlayed', 1)) },
-  { value: 'maior-preco', label: 'Maior preço', compare: (a, b) => b.price - a.price, needsPrices: true },
-  { value: 'menor-preco', label: 'Menor preço', compare: (a, b) => a.price - b.price, needsPrices: true },
+  { value: 'maior-preco', label: 'Maior preço', compare: nullsLast('price', -1), needsPrices: true },
+  { value: 'menor-preco', label: 'Menor preço', compare: nullsLast('price', 1), needsPrices: true },
   { value: 'custo-por-hora', label: 'Menor custo por hora', compare: nullsLast('costPerHour', 1), needsPrices: true }
 ]
 

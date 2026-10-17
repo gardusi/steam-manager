@@ -1,8 +1,8 @@
-import { useOwnedGames } from '../../state/ownedGames'
+import { useLibrary } from '../../state/library'
 import DashboardView from './view'
 
 const Dashboard = () => {
-  const { games, status, error, reload } = useOwnedGames()
-  return <DashboardView ownedGames={games} status={status} error={error} onRetry={reload} />
+  const { games, isLoading, isError, error, reload } = useLibrary()
+  return <DashboardView ownedGames={games} isLoading={isLoading} isError={isError} error={error} onRetry={reload} />
 }
 export default Dashboard

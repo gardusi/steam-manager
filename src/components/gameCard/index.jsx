@@ -2,12 +2,12 @@ import GameRow, { GameRowSkeleton } from '../gameRow'
 import HistoricalLow from '../gameRow/historicalLow'
 import { PlayButton, PriceBlock, Price, CostPerHour } from '../gameRow/style'
 import { formatHours, formatPrice, formatRelativeDate } from '../../utils/format'
-import { neverPlayedThreshold } from '../../utils/playtime'
+import { isPlayed } from '../../domain/playtime'
 
-const playtimeLabel = ({ playtime, lastPlayed }) => {
-  if (playtime < neverPlayedThreshold) return 'Nunca jogado'
-  const hours = `${formatHours(playtime)} de jogo`
-  return lastPlayed ? `${hours} · jogado ${formatRelativeDate(lastPlayed)}` : hours
+const playtimeLabel = (game) => {
+  if (!isPlayed(game)) return 'Nunca jogado'
+  const hours = `${formatHours(game.playtime)} de jogo`
+  return game.lastPlayed ? `${hours} · jogado ${formatRelativeDate(game.lastPlayed)}` : hours
 }
 
 // A game in the owned library

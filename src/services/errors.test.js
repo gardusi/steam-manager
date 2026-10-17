@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import request from './index'
+import request from './http'
 import { fetchAchievements, fetchOwnedGames } from './steam'
 
 // Responses as observed from the real APIs

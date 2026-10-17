@@ -5,9 +5,8 @@ import GameCard, { GameCardSkeleton } from '../../components/gameCard'
 import Search from '../../components/search'
 import StatusMessage from '../../components/statusMessage'
 import { Page, PageTitle, space } from '../../globalStyles'
-import { fetchStatus } from '../../services'
 import { describeError } from '../../utils/errorMessages'
-import { playtimeBuckets } from '../../utils/playtime'
+import { playtimeBuckets } from '../../domain/playtime'
 
 const List = styled.div`
   display: flex;
@@ -21,12 +20,11 @@ const emptyMessage = (query, bucket) => {
   return `Nenhum jogo em ${bucket.label.toLowerCase()}`
 }
 
-const DashboardView = ({ ownedGames, status, error, onRetry }) => {
+const DashboardView = ({ ownedGames, isLoading, isError, error, onRetry }) => {
   const {
     games, query, setQuery, sortOptions, sortOption, setSortOption,
     bucket, bucketCounts, setBucket, clearFilters
   } = useGameList(ownedGames)
-  const isLoading = status === fetchStatus.idle || status === fetchStatus.fetching
 
   const filterOptions = [
     { key: null, label: 'Todos', count: ownedGames.length },
@@ -34,7 +32,7 @@ const DashboardView = ({ ownedGames, status, error, onRetry }) => {
   ]
 
   const renderContent = () => {
-    if (status === fetchStatus.error) {
+    if (isError) {
       return (
         <StatusMessage
           tone='error'
@@ -86,7 +84,7 @@ const DashboardView = ({ ownedGames, status, error, onRetry }) => {
         sortOption={sortOption}
         onSort={setSortOption}
       >
-        {!isLoading && status !== fetchStatus.error && (
+        {!isLoading && !isError && (
           <FilterChips
             label='Filtrar por tempo de jogo'
             options={filterOptions}
