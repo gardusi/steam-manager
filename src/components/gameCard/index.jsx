@@ -1,4 +1,4 @@
-import GameRow, { GameRowSkeleton } from '../gameRow'
+import GameRow from '../gameRow'
 import HistoricalLow from '../gameRow/historicalLow'
 import { PlayButton, PriceBlock, Price, CostPerHour } from '../gameRow/style'
 import { formatHours, formatPrice, formatRelativeDate } from '../../utils/format'
@@ -35,7 +35,5 @@ const GameCard = ({ game, showCostPerHour = false }) => {
     />
   )
 }
-
-export const GameCardSkeleton = GameRowSkeleton
 
 export default GameCard
