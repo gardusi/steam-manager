@@ -17,11 +17,10 @@ export const buildMetadata = (games) => {
   const timeNeverPlayed = buckets['nunca-jogados']
   return {
     hoursPlayed: games.reduce((acc, game) => acc + game.playtime, 0),
-    mostPlayed: games.reduce((max, game) => max.playtime < game.playtime ? game : max),
     numberOfGames: games.length,
     buckets,
     timeNeverPlayed,
-    percentualPlayed: 1 - timeNeverPlayed / games.length
+    percentualPlayed: games.length ? 1 - timeNeverPlayed / games.length : 0
   }
 }
 

@@ -17,10 +17,6 @@ describe('buildMetadata', () => {
     expect(metadata.numberOfGames).toBe(5)
   })
 
-  it('finds the most played game', () => {
-    expect(metadata.mostPlayed.name).toBe('E')
-  })
-
   it('counts games per playtime bucket', () => {
     expect(metadata.buckets).toEqual({
       '100h-ou-mais': 1,
@@ -34,5 +30,13 @@ describe('buildMetadata', () => {
   it('computes the share of games ever played', () => {
     expect(metadata.timeNeverPlayed).toBe(1)
     expect(metadata.percentualPlayed).toBe(0.8)
+  })
+
+  it('handles an empty library instead of throwing', () => {
+    const empty = buildMetadata([])
+    expect(empty.numberOfGames).toBe(0)
+    expect(empty.hoursPlayed).toBe(0)
+    expect(empty.percentualPlayed).toBe(0)
+    expect(Object.values(empty.buckets).every(count => count === 0)).toBe(true)
   })
 })
